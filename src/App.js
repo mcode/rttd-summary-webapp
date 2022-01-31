@@ -2,6 +2,8 @@ import logo from "./CodeXLogo.png";
 import axios from "axios";
 import "./App.css";
 
+const fhirpath = require("fhirpath");
+
 const baseURL = "https://api.logicahealth.org/RTTD/open";
 const firstPatientId = "Patient-XRTS-01";
 const secondPatientId = "Patient-XRTS-03";
@@ -35,12 +37,12 @@ async function fetchPatients(patientIdArray) {
 async function fetchProcedures(patientId) {
   let procedureResources = await axios
     .get(`${baseURL}/Procedure?subject:Patient=${patientId}`)
-    .then((res) => res.data.entry)
+    .then((res) => res.data)
     .catch((e) => {
       console.log(e);
     });
 
-  return procedureResources.map((entryItem) => entryItem.resource);
+  return procedureResources;
 }
 
 /**
@@ -53,10 +55,54 @@ async function makeRequests() {
 
   for (const patient of patientResources) {
     const procedures = await fetchProcedures(patient.id);
-    resourceMap.set(patient.id, [patient, ...procedures]);
+    resourceMap.set(patient.id, [patient, procedures]);
   }
 
   console.log(resourceMap);
+  console.log(mapPatient(resourceMap.get("Patient-XRTS-01")[0]));
+  console.log(mapCourseSummary(resourceMap.get("Patient-XRTS-01")[1]));
+}
+
+function mapPatient(patient) {
+  let output = {};
+  output["ID"] = patient.identifier[0].value;
+  output["First Name"] = patient.name[0].given.join(" ");
+  output["Last Name"] = patient.name[0].family;
+  output["Date of Birth"] = patient.birthDate;
+  output["Administrative Gender"] = patient.gender;
+  output["Birth Sex"] = patient.extension[0].valueCode;
+  return output;
+}
+
+function mapCourseSummary(procedure) {
+  let summary = fhirpath.evaluate(
+    procedure,
+    "Bundle.entry.where(resource.meta.profile.first() = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
+  )[0];
+  let output = {};
+  output["Course Label"] = summary.identifier[0].value;
+  let intent = fhirpath.evaluate(
+    summary,
+    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding"
+  )[0];
+  output["Treatment Intent"] = `SCT#${intent.code} "${intent.display}"`;
+  output["Start Date"] = summary.performedPeriod.start;
+  output["End Date"] = summary.performedPeriod.end;
+  let modality = fhirpath.evaluate(
+    summary,
+    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
+  )[0];
+  output["Modalities"] = `SCT#${modality.code} "${modality.display}"`;
+  let technique = fhirpath.evaluate(
+    summary,
+    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
+  )[0];
+  output["Techniques"] = `SCT#${technique.code} "${technique.display}"`;
+  output["Number of Sessions"] = fhirpath.evaluate(
+    summary,
+    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
+  )[0];
+  return output;
 }
 
 function App() {
