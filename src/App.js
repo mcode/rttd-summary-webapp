@@ -1,5 +1,7 @@
-import logo from "./CodeXLogo.png";
+import { useState } from "react";
 import axios from "axios";
+import DataView from "./components/DataView";
+import logo from "./CodeXLogo.png";
 import "./App.css";
 
 const {
@@ -87,17 +89,29 @@ async function makeRequests() {
   console.log(mapCourseSummary(resourceMap.get("Patient-XRTS-03")[1]));
   console.log(mapPhase(resourceMap.get("Patient-XRTS-03")[1]));
   console.log(mapVolumes(resourceMap.get("Patient-XRTS-03")[2]));
+  return [
+    mapPatient(resourceMap.get("Patient-XRTS-01")[0]),
+    mapCourseSummary(resourceMap.get("Patient-XRTS-01")[1]),
+  ];
 }
 
 function App() {
+  const [fetchedData, setFetchedData] = useState();
   return (
     <div className="App">
       <header className="App-header">
         <p>Radiotherapy Treatment Demo App</p>
       </header>
-      <button onClick={makeRequests} className="request-button">
+      <button
+        onClick={async () => {
+          const resp = await makeRequests();
+          setFetchedData(resp);
+        }}
+        className="my-4 p-1 rounded border border-black cursor-pointer transition-all hover:shadow-lg active:shadow "
+      >
         Fetch Treatment Summaries
       </button>
+      {fetchedData && <DataView data={fetchedData} />}
       <img justify-content="center" src={logo} className="center" alt="logo" />
     </div>
   );
