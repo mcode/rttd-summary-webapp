@@ -92,6 +92,7 @@ async function makeRequests() {
   return [
     mapPatient(resourceMap.get("Patient-XRTS-01")[0]),
     mapCourseSummary(resourceMap.get("Patient-XRTS-01")[1]),
+    resourceMap.get("Patient-XRTS-01")[2],
   ];
 }
 

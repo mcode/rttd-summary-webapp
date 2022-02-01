@@ -1,4 +1,4 @@
-function SimpleDataTable({ data, title, className }) {
+function SimpleDataTable({ data = {}, title, className }) {
   const keys = Object.keys(data);
   const values = Object.values(data);
   return (
