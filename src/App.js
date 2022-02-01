@@ -46,6 +46,24 @@ async function fetchProcedures(patientId) {
 }
 
 /**
+ * Takes a patient ID and fetches RTTD Volumes resources that patient
+ * @param {String} patientId - A patient ID to fetch Procedure resources for
+ * @returns {Object[]} Returns an array of FHIR BodyStructure resources for that Patient
+ */
+async function fetchVolumes(patientId) {
+  // TODO: Determine why this is a body structure and
+  //       if we need to filter out non-volume BodyStructure resources
+  let volumeResources = await axios
+    .get(`${baseURL}/BodyStructure?patient:Patient=${patientId}`)
+    .then((res) => res.data)
+    .catch((e) => {
+      console.log(e);
+    });
+
+  return volumeResources;
+}
+
+/**
  * Creates a map with each patient Id as a key, and an array of corresponding resources as the value.
  * Logs the resulting map to the console
  */
@@ -55,7 +73,8 @@ async function makeRequests() {
 
   for (const patient of patientResources) {
     const procedures = await fetchProcedures(patient.id);
-    resourceMap.set(patient.id, [patient, procedures]);
+    const volumes = await fetchVolumes(patient.id);
+    resourceMap.set(patient.id, [patient, procedures, volumes]);
   }
 
   console.log(resourceMap);
