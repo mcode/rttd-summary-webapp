@@ -1,6 +1,6 @@
 # Radiation Therapy Treatment Data Summary 
 
-A web application for viewing CODEx modelled Radiation Therapy Treatment Data summaries.
+A web application for viewing CODEx modeled [Radiation Therapy Treatment Data](https://build.fhir.org/ig/HL7/codex-radiation-therapy/branches/master/artifacts.html) summaries. For a helpful glossary of radiation therapy terminology, see [here](https://build.fhir.org/ig/HL7/fhir-mCODE-ig/glossary.html).
 
 ## Technologies Used
 
