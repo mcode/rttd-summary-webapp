@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import PatientTable from "./PatientTable";
-import DiagnosisTable from "./DiagnosisTable";
+// import DiagnosisTable from "./DiagnosisTable";
 import TreatmentVolumeTable from "./TreatmentVolumeTable";
 import TreatmentPhaseTable from "./TreatmentPhaseTable";
 import CourseSummaryTable from "./CourseSummaryTable";
@@ -36,10 +36,10 @@ function getTreatmentVolumesData(data) {
  * @param {Object[]} data
  * @returns Diagnosis data formatted for the DiagnosisTable visualizer
  */
-function getDiagnosisData(data) {
-  return undefined;
-  // return data[1];
-}
+// function getDiagnosisData(data) {
+//   return undefined;
+//   // return data[1];
+// }
 
 /**
  * Parse and reformat phase data for visualization
@@ -61,7 +61,7 @@ function getCourseSummaryData(data) {
 
 function DataView({ data }) {
   const patientData = getPatientData(data);
-  const diagnosisData = getDiagnosisData(data);
+  // const diagnosisData = getDiagnosisData(data);
   const treatmentPhaseData = getTreatmentPhaseData(data);
   const treatmentVolumesData = getTreatmentVolumesData(data);
   const courseSummaryData = getCourseSummaryData(data);
