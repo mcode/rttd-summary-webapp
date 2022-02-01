@@ -1,4 +1,5 @@
 import PatientTable from "./PatientTable";
+import DiagnosisTable from "./DiagnosisTable";
 import TreatmentVolumeTable from "./TreatmentVolumeTable";
 import TreatmentPhaseTable from "./TreatmentPhaseTable";
 import CourseSummaryTable from "./CourseSummaryTable";
@@ -19,7 +20,17 @@ function getPatientData(data) {
  */
 function getTreatmentVolumesData(data) {
   console.log(data[2]);
-  return data[2];
+  return data[2].entry;
+}
+
+/**
+ * Parse and reformat diagnosis data for visualization
+ * @param {Object[]} data
+ * @returns Diagnosis data formatted for the DiagnosisTable visualizer
+ */
+function getDiagnosisData(data) {
+  return undefined;
+  // return data[1];
 }
 
 /**
@@ -28,7 +39,8 @@ function getTreatmentVolumesData(data) {
  * @returns Phase data formatted for the TreatmentPhaseTable visualizer
  */
 function getTreatmentPhaseData(data) {
-  return data[1];
+  return undefined;
+  // return data[1];
 }
 
 /**
@@ -42,14 +54,16 @@ function getCourseSummaryData(data) {
 
 function DataView({ data }) {
   const patientData = getPatientData(data);
+  const diagnosisData = getDiagnosisData(data);
   const treatmentPhaseData = getTreatmentPhaseData(data);
   const treatmentVolumesData = getTreatmentVolumesData(data);
   const courseSummaryData = getCourseSummaryData(data);
   return (
     <div>
       <PatientTable className="m-4" data={patientData} />
-      <TreatmentVolumeTable className="m-4" data={treatmentPhaseData} />
-      <TreatmentPhaseTable className="m-4" data={treatmentVolumesData} />
+      <DiagnosisTable className="m-4" data={diagnosisData} />
+      <TreatmentPhaseTable className="m-4" data={treatmentPhaseData} />
+      <TreatmentVolumeTable className="m-4" data={treatmentVolumesData} />
       <CourseSummaryTable className="m-4" data={courseSummaryData} />
     </div>
   );
