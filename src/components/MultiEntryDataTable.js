@@ -3,7 +3,6 @@ import { hashData } from "../lib/hashData";
 function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
   // Don't render if there is no dataArray
   if (dataArray.length === 0) return;
-  console.log(dataArray);
   const exampleInstance = dataArray[0];
   const keys = Object.keys(exampleInstance);
   //  Each row is the key followed by all the values it follows.
@@ -12,7 +11,9 @@ function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
   });
 
   return (
-    <table className={`table-auto border text-left ${className}`}>
+    <table
+      className={`table-auto border text-left block max-w-screen-2xl overflow-auto ${className}`}
+    >
       <thead className="border-b bg-slate-200">
         <tr>
           <th className="text-sm font-medium text-gray-900 px-6 py-3 text-left">
@@ -20,7 +21,12 @@ function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
           </th>
           {dataArray.map((instance, i) => {
             return (
-              <th key={hashData(instance)}>{`${columnTitle} ${i + 1}`}</th>
+              <th
+                key={hashData(instance)}
+                className="text-sm font-normal text-gray-900 px-6 py-3 text-left"
+              >
+                {`${columnTitle} ${i + 1}`}
+              </th>
             );
           })}
         </tr>
@@ -38,10 +44,10 @@ function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
                     // If this is the first column, style the font differently
                     i === 0 ? "font-medium" : "font-light"
                   } text-sm text-gray-900 px-6 py-3 whitespace-nowrap`}
-                  key={JSON.stringify(elem)}
+                  key={elem + i}
                 >
-                  {/* {elem} */}
-                  testing
+                  {elem}
+                  {/* testing */}
                 </td>
               ))}
             </tr>

@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import PatientTable from "./PatientTable";
 import DiagnosisTable from "./DiagnosisTable";
 import TreatmentVolumeTable from "./TreatmentVolumeTable";
@@ -19,8 +20,15 @@ function getPatientData(data) {
  * @returns Treatment volume data formatted for the CourseSummaryTable visualizer
  */
 function getTreatmentVolumesData(data) {
-  console.log(data[3]);
-  return data[3].entry;
+  return data[3].entry.map((vol) => ({
+    "Volume Label": "Prostate",
+    // UID: "{assigned by provider}",
+    UID: v4(),
+    "Type (*1)": 'SCT#228793007 "Planning target volume (observable entity)"',
+    "Location Code": 'SCT#41216001 "Prostatic structure (body structure)" ',
+    "Location Qualifier Code": 'SCT#255503000 "Entire (qualifier value)"',
+    "Laterality Qualifier Code": "n/a",
+  }));
 }
 
 /**
@@ -60,7 +68,9 @@ function DataView({ data }) {
   return (
     <div>
       <PatientTable className="m-4" data={patientData} />
-      <DiagnosisTable className="m-4" data={diagnosisData} />
+      {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
+      {/* <DiagnosisTable className="m-4" data={diagnosisData} /> */}
+      <TreatmentVolumeTable className="m-4" data={treatmentVolumesData} />
       {treatmentPhaseData.map((phase, i) => (
         <TreatmentPhaseTable
           key={phase["Start Date"]}
@@ -69,7 +79,6 @@ function DataView({ data }) {
           title={`Phase ${i + 1}`}
         />
       ))}
-      <TreatmentVolumeTable className="m-4" data={treatmentVolumesData} />
       <CourseSummaryTable className="m-4" data={courseSummaryData} />
     </div>
   );

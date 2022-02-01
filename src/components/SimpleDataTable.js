@@ -2,7 +2,7 @@ function SimpleDataTable({ data = {}, title, className }) {
   const keys = Object.keys(data);
   const values = Object.values(data);
   return (
-    <table className={`table-auto border text-left ${className}`}>
+    <table className={`table-auto border text-left max-w-md ${className}`}>
       <thead className="border-b bg-slate-200">
         <tr>
           <th className="text-sm font-medium text-gray-900 px-6 py-3 text-left">
