@@ -91,6 +91,7 @@ async function makeRequests() {
   console.log(mapVolumes(resourceMap.get("Patient-XRTS-03")[2]));
   return [
     mapPatient(resourceMap.get("Patient-XRTS-01")[0]),
+    mapPhase(resourceMap.get("Patient-XRTS-03")[1]),
     mapCourseSummary(resourceMap.get("Patient-XRTS-01")[1]),
     resourceMap.get("Patient-XRTS-01")[2],
   ];

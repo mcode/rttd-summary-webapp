@@ -19,8 +19,8 @@ function getPatientData(data) {
  * @returns Treatment volume data formatted for the CourseSummaryTable visualizer
  */
 function getTreatmentVolumesData(data) {
-  console.log(data[2]);
-  return data[2].entry;
+  console.log(data[3]);
+  return data[3].entry;
 }
 
 /**
@@ -39,8 +39,7 @@ function getDiagnosisData(data) {
  * @returns Phase data formatted for the TreatmentPhaseTable visualizer
  */
 function getTreatmentPhaseData(data) {
-  return undefined;
-  // return data[1];
+  return data[1];
 }
 
 /**
@@ -49,7 +48,7 @@ function getTreatmentPhaseData(data) {
  * @returns Course summary data formatted for the CourseSummaryTable visualizer
  */
 function getCourseSummaryData(data) {
-  return data[1];
+  return data[2];
 }
 
 function DataView({ data }) {
@@ -62,7 +61,14 @@ function DataView({ data }) {
     <div>
       <PatientTable className="m-4" data={patientData} />
       <DiagnosisTable className="m-4" data={diagnosisData} />
-      <TreatmentPhaseTable className="m-4" data={treatmentPhaseData} />
+      {treatmentPhaseData.map((phase, i) => (
+        <TreatmentPhaseTable
+          key={phase["Start Date"]}
+          className="m-4"
+          data={phase}
+          title={`Phase ${i + 1}`}
+        />
+      ))}
       <TreatmentVolumeTable className="m-4" data={treatmentVolumesData} />
       <CourseSummaryTable className="m-4" data={courseSummaryData} />
     </div>
