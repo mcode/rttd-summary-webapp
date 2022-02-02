@@ -28,23 +28,30 @@ function mapCourseSummary(procedure) {
   )[0];
   let output = {};
   output["Course Label"] = summary.identifier[0].value;
+  output["Treatment Status"] = summary.status;
   let intent = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding"
   )[0];
-  output["Treatment Intent"] = `SCT#${intent.code} "${intent.display}"`;
+  output["Treatment Intent"] = intent
+    ? `SCT#${intent.code} "${intent.display}"`
+    : undefined;
   output["Start Date"] = summary.performedPeriod.start;
   output["End Date"] = summary.performedPeriod.end;
   let modality = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
   )[0];
-  output["Modalities"] = `SCT#${modality.code} "${modality.display}"`;
+  output["Modalities"] = modality
+    ? `SCT#${modality.code} "${modality.display}"`
+    : undefined;
   let technique = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
   )[0];
-  output["Techniques"] = `SCT#${technique.code} "${technique.display}"`;
+  output["Techniques"] = technique
+    ? `SCT#${technique.code} "${technique.display}"`
+    : undefined;
   output["Number of Sessions"] = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
@@ -83,12 +90,16 @@ function mapPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
     )[0];
-    output["Modalities"] = `SCT#${modality.code} "${modality.display}"`;
+    output["Modalities"] = modality
+      ? `SCT#${modality.code} "${modality.display}"`
+      : undefined;
     let technique = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
     )[0];
-    output["Techniques"] = `SCT#${technique.code} "${technique.display}"`;
+    output["Techniques"] = technique
+      ? `SCT#${technique.code} "${technique.display}"`
+      : undefined;
     output["Number of Fractions Delivered"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-delivered').valueUnsignedInt"
