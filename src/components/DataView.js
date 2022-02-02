@@ -57,7 +57,7 @@ function DataView({ data }) {
   const treatmentVolumesData = getTreatmentVolumesData(data);
   const courseSummaryData = getCourseSummaryData(data);
   return (
-    <div>
+    <div className="container mx-auto">
       <PatientTable className="m-4" data={patientData} />
       {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
       {/* <DiagnosisTable className="m-4" data={diagnosisData} /> */}

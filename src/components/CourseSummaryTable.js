@@ -2,7 +2,6 @@ import SimpleDataTable from "./SimpleDataTable";
 import MultiEntryDataTable from "./MultiEntryDataTable";
 
 function CourseSummaryTable({ data, className }) {
-  console.log(data);
   const numVolumes = data["Number of Delivered Fractions"].length;
   const volumesData = [];
   for (let i = 0; i < numVolumes; i++) {
@@ -13,7 +12,6 @@ function CourseSummaryTable({ data, className }) {
       "Body Sites": data["Body Sites"][i],
     });
   }
-  console.log(volumesData);
   const courseData = { ...data };
   delete courseData["Number of Delivered Fractions"];
   delete courseData["Total Delivered Dose to Course [cGy]"];
