@@ -2,7 +2,12 @@ import logo from "./CodeXLogo.png";
 import axios from "axios";
 import "./App.css";
 
-const { mapPatient, mapCourseSummary, mapPhase } = require("./mappingUtils.js");
+const {
+  mapPatient,
+  mapCourseSummary,
+  mapPhase,
+  mapVolumes,
+} = require("./mappingUtils.js");
 
 const baseURL = "https://api.logicahealth.org/RTTD/open";
 const firstPatientId = "Patient-XRTS-01";
@@ -81,6 +86,7 @@ async function makeRequests() {
   console.log(mapPatient(resourceMap.get("Patient-XRTS-03")[0]));
   console.log(mapCourseSummary(resourceMap.get("Patient-XRTS-03")[1]));
   console.log(mapPhase(resourceMap.get("Patient-XRTS-03")[1]));
+  console.log(mapVolumes(resourceMap.get("Patient-XRTS-03")[2]));
 }
 
 function App() {

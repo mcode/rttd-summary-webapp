@@ -102,4 +102,36 @@ function mapPhase(procedure) {
   return outputs;
 }
 
-export { mapPatient, mapCourseSummary, mapPhase };
+/**
+ * Takes a bundle of body structures returned by makeRequests and returns an array of mappings of Volume data to be displayed in the table
+ * @param {Object} volumes - A bundle of radiotherapy volume body structures
+ * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
+ */
+function mapVolumes(volumes) {
+  let bodyStructures = fhirpath.evaluate(volumes, "Bundle.entry.resource");
+  let outputs = [];
+  bodyStructures.forEach((volume) => {
+    let output = {};
+    output["Volume Label"] = fhirpath.evaluate(
+      volume,
+      "BodyStructure.identifier.where(use = 'usual').value"
+    )[0];
+    output["UID"] = fhirpath.evaluate(
+      volume,
+      "BodyStructure.identifier.where(use = 'official').value"
+    )[0];
+    output["Type"] = volume.morphology
+      ? `SCT#${volume.morphology.coding[0].code} "${volume.morphology.coding[0].display}"`
+      : undefined;
+    output["Location Code"] = volume.location
+      ? `SCT#${volume.location.coding[0].code} "${volume.location.coding[0].display}"`
+      : undefined;
+    output["Location Qualifier Code"] = volume.locationQualifier
+      ? `SCT#${volume.locationQualifier[0].coding[0].code} "${volume.locationQualifier[0].coding[0].display}"`
+      : undefined;
+    outputs.push(output);
+  });
+  return outputs;
+}
+
+export { mapPatient, mapCourseSummary, mapPhase, mapVolumes };
