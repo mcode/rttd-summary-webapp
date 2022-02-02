@@ -1,4 +1,3 @@
-import { v4 } from "uuid";
 import PatientTable from "./PatientTable";
 // import DiagnosisTable from "./DiagnosisTable";
 import TreatmentVolumeTable from "./TreatmentVolumeTable";
@@ -20,15 +19,7 @@ function getPatientData(data) {
  * @returns Treatment volume data formatted for the CourseSummaryTable visualizer
  */
 function getTreatmentVolumesData(data) {
-  return data[3].entry.map((vol) => ({
-    "Volume Label": "Prostate",
-    // UID: "{assigned by provider}",
-    UID: v4(),
-    "Type (*1)": 'SCT#228793007 "Planning target volume (observable entity)"',
-    "Location Code": 'SCT#41216001 "Prostatic structure (body structure)" ',
-    "Location Qualifier Code": 'SCT#255503000 "Entire (qualifier value)"',
-    "Laterality Qualifier Code": "n/a",
-  }));
+  return data[3];
 }
 
 /**
