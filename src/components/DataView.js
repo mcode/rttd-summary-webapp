@@ -43,9 +43,6 @@ function getCourseSummaryData(selectedPatientId, resourceMap) {
 
 function DataView({ data }) {
   const [patientsIds, resourceMap] = data;
-  console.log(data);
-  console.log(patientsIds);
-  console.log(resourceMap);
   const [selectedPatientId, setSelectedPatientId] = useState(
     patientsIds.length !== 0 && patientsIds[0]
   );

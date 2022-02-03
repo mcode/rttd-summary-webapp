@@ -1,9 +1,7 @@
 function PatientSelect({ options, value, setValue }) {
   function handleChange(event) {
-    console.log(event.target.value);
     setValue(event.target.value);
   }
-  console.log(options);
   return (
     <div className="flex flex-col">
       <label htmlFor="patientSelect" className="font-light text-left text-sm">
