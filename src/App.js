@@ -2,6 +2,13 @@ import logo from "./CodeXLogo.png";
 import axios from "axios";
 import "./App.css";
 
+const {
+  mapPatient,
+  mapCourseSummary,
+  mapPhase,
+  mapVolumes,
+} = require("./mappingUtils.js");
+
 const baseURL = "https://api.logicahealth.org/RTTD/open";
 const firstPatientId = "Patient-XRTS-01";
 const secondPatientId = "Patient-XRTS-03";
@@ -35,12 +42,30 @@ async function fetchPatients(patientIdArray) {
 async function fetchProcedures(patientId) {
   let procedureResources = await axios
     .get(`${baseURL}/Procedure?subject:Patient=${patientId}`)
-    .then((res) => res.data.entry)
+    .then((res) => res.data)
     .catch((e) => {
       console.log(e);
     });
 
-  return procedureResources.map((entryItem) => entryItem.resource);
+  return procedureResources;
+}
+
+/**
+ * Takes a patient ID and fetches RTTD Volumes resources that patient
+ * @param {String} patientId - A patient ID to fetch Procedure resources for
+ * @returns {Object[]} Returns an array of FHIR BodyStructure resources for that Patient
+ */
+async function fetchVolumes(patientId) {
+  // TODO: Determine why this is a body structure and
+  //       if we need to filter out non-volume BodyStructure resources
+  let volumeResources = await axios
+    .get(`${baseURL}/BodyStructure?patient:Patient=${patientId}`)
+    .then((res) => res.data)
+    .catch((e) => {
+      console.log(e);
+    });
+
+  return volumeResources;
 }
 
 /**
@@ -53,10 +78,15 @@ async function makeRequests() {
 
   for (const patient of patientResources) {
     const procedures = await fetchProcedures(patient.id);
-    resourceMap.set(patient.id, [patient, ...procedures]);
+    const volumes = await fetchVolumes(patient.id);
+    resourceMap.set(patient.id, [patient, procedures, volumes]);
   }
 
   console.log(resourceMap);
+  console.log(mapPatient(resourceMap.get("Patient-XRTS-03")[0]));
+  console.log(mapCourseSummary(resourceMap.get("Patient-XRTS-03")[1]));
+  console.log(mapPhase(resourceMap.get("Patient-XRTS-03")[1]));
+  console.log(mapVolumes(resourceMap.get("Patient-XRTS-03")[2]));
 }
 
 function App() {
