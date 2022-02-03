@@ -10,6 +10,7 @@ function TreatmentPhaseTable({ data, title, className }) {
   const volumesData = [];
   for (let i = 0; i < numVolumes; i++) {
     volumesData.push({
+      "Dose Per Fraction [cGy]": data["Dose Per Fraction [cGy]"][i],
       "Total Dose Delivered from Phase [cGy]":
         data["Total Dose Delivered from Phase [cGy]"][i],
     });
