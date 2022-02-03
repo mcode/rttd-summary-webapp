@@ -63,7 +63,7 @@ function DataView({ data }) {
     resourceMap
   );
   return (
-    <div className="container sm:mx-auto mx-4">
+    <div className="container sm:mx-auto px-4 sm:px-0">
       <PatientSelect
         options={patientsIds}
         value={selectedPatientId}
