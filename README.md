@@ -19,6 +19,12 @@ Run the application in development mode with:
 npm start
 ```
 
+After changes have been made, you can deploy a new version of the application to github pages with:
+
+```bash
+npm run deploy
+```
+
 ## Create React App Docs
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Below are the default docs provided when you kickstart a CRA project.
