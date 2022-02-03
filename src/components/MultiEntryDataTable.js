@@ -15,7 +15,9 @@ function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
   });
 
   return (
-    <div className={`overflow-x-auto max-w-screen-xl border ${className}`}>
+    <div
+      className={`overflow-x-auto max-w-screen-xl w-min border ${className}`}
+    >
       <table className="table-fixed border w-full text-left break-normal">
         <thead className="border-b bg-slate-200">
           <tr>

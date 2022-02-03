@@ -1,16 +1,17 @@
 import PatientTable from "./PatientTable";
-// import DiagnosisTable from "./DiagnosisTable";
 import TreatmentVolumeTable from "./TreatmentVolumeTable";
 import TreatmentPhaseTable from "./TreatmentPhaseTable";
 import CourseSummaryTable from "./CourseSummaryTable";
+import PatientSelect from "./PatientSelect";
+import { useState } from "react";
 
 /**
  * Parse and reformat patient data for visualization
  * @param {Object[]} data
  * @returns Patient data formatted for the PatientTable visualizer
  */
-function getPatientData(data) {
-  return data[0];
+function getPatientData(selectedPatientId, resourceMap) {
+  return resourceMap.get(selectedPatientId)[0];
 }
 
 /**
@@ -18,27 +19,17 @@ function getPatientData(data) {
  * @param {Object[]} data
  * @returns Treatment volume data formatted for the CourseSummaryTable visualizer
  */
-function getTreatmentVolumesData(data) {
-  return data[3];
+function getTreatmentVolumesData(selectedPatientId, resourceMap) {
+  return resourceMap.get(selectedPatientId)[3];
 }
-
-/**
- * Parse and reformat diagnosis data for visualization
- * @param {Object[]} data
- * @returns Diagnosis data formatted for the DiagnosisTable visualizer
- */
-// function getDiagnosisData(data) {
-//   return undefined;
-//   // return data[1];
-// }
 
 /**
  * Parse and reformat phase data for visualization
  * @param {Object[]} data
  * @returns Phase data formatted for the TreatmentPhaseTable visualizer
  */
-function getTreatmentPhaseData(data) {
-  return data[1];
+function getTreatmentPhaseData(selectedPatientId, resourceMap) {
+  return resourceMap.get(selectedPatientId)[1];
 }
 
 /**
@@ -46,18 +37,38 @@ function getTreatmentPhaseData(data) {
  * @param {Object[]} data
  * @returns Course summary data formatted for the CourseSummaryTable visualizer
  */
-function getCourseSummaryData(data) {
-  return data[2];
+function getCourseSummaryData(selectedPatientId, resourceMap) {
+  return resourceMap.get(selectedPatientId)[2];
 }
 
 function DataView({ data }) {
-  const patientData = getPatientData(data);
-  // const diagnosisData = getDiagnosisData(data);
-  const treatmentPhaseData = getTreatmentPhaseData(data);
-  const treatmentVolumesData = getTreatmentVolumesData(data);
-  const courseSummaryData = getCourseSummaryData(data);
+  const [patientsIds, resourceMap] = data;
+  console.log(data);
+  console.log(patientsIds);
+  console.log(resourceMap);
+  const [selectedPatientId, setSelectedPatientId] = useState(
+    patientsIds.length !== 0 && patientsIds[0]
+  );
+  const patientData = getPatientData(selectedPatientId, resourceMap);
+  const treatmentPhaseData = getTreatmentPhaseData(
+    selectedPatientId,
+    resourceMap
+  );
+  const treatmentVolumesData = getTreatmentVolumesData(
+    selectedPatientId,
+    resourceMap
+  );
+  const courseSummaryData = getCourseSummaryData(
+    selectedPatientId,
+    resourceMap
+  );
   return (
     <div className="container mx-auto">
+      <PatientSelect
+        options={patientsIds}
+        value={selectedPatientId}
+        setValue={setSelectedPatientId}
+      />
       <PatientTable className="m-4" data={patientData} />
       {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
       {/* <DiagnosisTable className="m-4" data={diagnosisData} /> */}
