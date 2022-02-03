@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { isBoolean } from "lodash";
 import { DateTime } from "luxon";
 import EmptyComponent from "../components/EmptyComponent";
 
@@ -15,10 +15,12 @@ function isEmpty(data) {
 }
 
 function dataDisplay(data) {
-  if (isDate(data)) {
-    return dateFormat(data);
-  } else if (isEmpty(data)) {
+  if (isEmpty(data)) {
     return <EmptyComponent />;
+  } else if (isBoolean(data)) {
+    return data ? "True" : "False";
+  } else if (isDate(data)) {
+    return dateFormat(data);
   } else {
     return data;
   }

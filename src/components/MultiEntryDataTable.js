@@ -1,4 +1,3 @@
-import { hashData } from "../lib/hashData";
 import TableData from "./TableData";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
@@ -24,12 +23,7 @@ function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
             <TableHeader isFirstCol text={title} />
             {/* Header for each element we have data for */}
             {dataArray.map((instance, i) => {
-              return (
-                <TableHeader
-                  key={hashData(instance)}
-                  text={`${columnTitle} ${i + 1}`}
-                />
-              );
+              return <TableHeader key={i} text={`${columnTitle} ${i + 1}`} />;
             })}
           </tr>
         </thead>

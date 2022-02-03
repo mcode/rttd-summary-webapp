@@ -1,5 +1,5 @@
 function EmptyComponent() {
-  return <p className="italic font-light">N/A</p>;
+  return <p className="italic font-light">No Data Available</p>;
 }
 
 export default EmptyComponent;
