@@ -4,8 +4,12 @@ function TableHeader({ isFirstCol, text }) {
       <th
         scope="col"
         className={`${
-          isFirstCol ? "w-48" : "w-96"
-        } px-6 py-3 text-sm font-medium text-gray-900 break-normal`}
+          isFirstCol ? "!w-48" : "!w-96"
+        } px-6 py-3 text-sm font-medium text-gray-900 `}
+        style={{
+          wordBreak: "break-word",
+          minWidth: isFirstCol ? "12rem" : "24rem",
+        }}
       >
         {text}
       </th>

@@ -6,16 +6,14 @@ function SimpleDataTable({ data = {}, title, className }) {
   const keys = Object.keys(data);
   const values = Object.values(data);
   return (
-    <table
-      className={`table-fixed max-w-screen-xl border text-left ${className}`}
+    <div
+      className={`max-w-screen-xl w-min border overflow-x-auto ${className} table-container`}
     >
-      <thead className="border-b bg-slate-200">
-        <tr>
+      <table className={`table-fixed text-left `}>
+        <tr className="border-b bg-slate-200">
           <TableHeader isFirstCol text={title} />
           <TableHeader />
         </tr>
-      </thead>
-      <tbody>
         {values.map((v, i) => {
           return (
             <TableRow key={`${keys[i]}-${v}`}>
@@ -24,8 +22,8 @@ function SimpleDataTable({ data = {}, title, className }) {
             </TableRow>
           );
         })}
-      </tbody>
-    </table>
+      </table>
+    </div>
   );
 }
 export default SimpleDataTable;

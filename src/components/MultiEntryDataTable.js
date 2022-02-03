@@ -1,8 +1,8 @@
-import { dataDisplay } from "../lib/dataDisplay";
 import { hashData } from "../lib/hashData";
 import TableData from "./TableData";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
+import "./table.css";
 
 function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
   // Don't render if there is no dataArray
@@ -16,9 +16,9 @@ function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
 
   return (
     <div
-      className={`overflow-x-auto max-w-screen-xl w-min border ${className}`}
+      className={`w-min border overflow-x-auto ${className} table-container`}
     >
-      <table className="table-fixed border w-full text-left break-normal">
+      <table className={`table-fixed text-left`}>
         <thead className="border-b bg-slate-200">
           <tr>
             <TableHeader isFirstCol text={title} />

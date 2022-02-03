@@ -63,25 +63,24 @@ function DataView({ data }) {
     resourceMap
   );
   return (
-    <div className="container mx-auto">
+    <div className="container sm:mx-auto mx-4">
       <PatientSelect
         options={patientsIds}
         value={selectedPatientId}
         setValue={setSelectedPatientId}
       />
-      <PatientTable className="m-4" data={patientData} />
+      <PatientTable className="my-4" data={patientData} />
       {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
-      {/* <DiagnosisTable className="m-4" data={diagnosisData} /> */}
-      <TreatmentVolumeTable className="m-4" data={treatmentVolumesData} />
+      {/* <DiagnosisTable className="my-4" data={diagnosisData} /> */}
+      <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
       {treatmentPhaseData.map((phase, i) => (
         <TreatmentPhaseTable
           key={phase["Start Date"]}
-          className="m-4"
           data={phase}
           title={`Phase ${i + 1}`}
         />
       ))}
-      <CourseSummaryTable className="m-4" data={courseSummaryData} />
+      <CourseSummaryTable className="my-4" data={courseSummaryData} />
     </div>
   );
 }
