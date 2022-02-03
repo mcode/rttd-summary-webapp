@@ -13,6 +13,7 @@ function mapPatient(patient) {
   output["Date of Birth"] = patient.birthDate;
   output["Administrative Gender"] = patient.gender;
   output["Birth Sex"] = patient.extension[0].valueCode;
+  output["Deceased"] = patient.deceasedBoolean;
   return output;
 }
 
@@ -36,6 +37,10 @@ function mapCourseSummary(procedure) {
   output["Treatment Intent"] = intent
     ? `SCT#${intent.code} "${intent.display}"`
     : undefined;
+  output["Treatment Termination Reason"] = fhirpath.evaluate(
+    summary,
+    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/STU2/StructureDefinition-mcode-treatment-termination-reason.html').valueCodeableConcept.coding.display"
+  )[0];
   output["Start Date"] = summary.performedPeriod.start;
   output["End Date"] = summary.performedPeriod.end;
   let modality = fhirpath.evaluate(
@@ -108,6 +113,9 @@ function mapPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
+    output["Dose Per Fraction [cGy]"] = output[
+      "Total Dose Delivered from Phase [cGy]"
+    ].map((dose) => dose / output["Number of Fractions Delivered"]);
     outputs.push(output);
   });
   return outputs;
@@ -140,6 +148,7 @@ function mapVolumes(volumes) {
     output["Location Qualifier Code"] = volume.locationQualifier
       ? `SCT#${volume.locationQualifier[0].coding[0].code} "${volume.locationQualifier[0].coding[0].display}"`
       : undefined;
+    output["Laterality Qualifier Code"] = undefined;
     outputs.push(output);
   });
   return outputs;
