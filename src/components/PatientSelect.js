@@ -6,7 +6,7 @@ function PatientSelect({ options, value, setValue }) {
   console.log(options);
   return (
     <div className="flex flex-col">
-      <label for="patientSelect" className="font-light text-left text-sm">
+      <label htmlFor="patientSelect" className="font-light text-left text-sm">
         Patient Selection
       </label>
       <select
@@ -16,7 +16,9 @@ function PatientSelect({ options, value, setValue }) {
         className="block my-1 p-2 rounded border border-gray-300 bg-slate-100 font-light"
       >
         {options.map((option) => (
-          <option value={option}>{option}</option>
+          <option value={option} key={option}>
+            {option}
+          </option>
         ))}
       </select>
     </div>

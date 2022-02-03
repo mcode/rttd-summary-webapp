@@ -10,18 +10,22 @@ function SimpleDataTable({ data = {}, title, className }) {
       className={`max-w-screen-xl w-min border overflow-x-auto ${className} table-container`}
     >
       <table className={`table-fixed text-left `}>
-        <tr className="border-b bg-slate-200">
-          <TableHeader isFirstCol text={title} />
-          <TableHeader />
-        </tr>
-        {values.map((v, i) => {
-          return (
-            <TableRow key={`${keys[i]}-${v}`}>
-              <TableData isFirstCol data={keys[i]} />
-              <TableData data={v} />
-            </TableRow>
-          );
-        })}
+        <thead>
+          <tr className="border-b bg-slate-200">
+            <TableHeader isFirstCol text={title} />
+            <TableHeader />
+          </tr>
+        </thead>
+        <tbody>
+          {values.map((v, i) => {
+            return (
+              <TableRow key={`${keys[i]}-${v}`}>
+                <TableData isFirstCol data={keys[i]} />
+                <TableData data={v} />
+              </TableRow>
+            );
+          })}
+        </tbody>
       </table>
     </div>
   );
