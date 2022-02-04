@@ -3,7 +3,7 @@ name: Deploy to GH Pages
 on:
   push:
     branches:
-      - main
+      - header-improvements
 
 jobs:
   deploy-to-pages:
