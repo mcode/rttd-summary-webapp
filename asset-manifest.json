@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/rttd-summary-webapp/static/css/main.99c3924e.css",
-    "main.js": "/rttd-summary-webapp/static/js/main.15b13d5f.js",
+    "main.css": "/rttd-summary-webapp/static/css/main.7f4d5b6a.css",
+    "main.js": "/rttd-summary-webapp/static/js/main.7a64ac1a.js",
     "static/js/787.4237a2d4.chunk.js": "/rttd-summary-webapp/static/js/787.4237a2d4.chunk.js",
-    "static/media/CodeXLogo.png": "/rttd-summary-webapp/static/media/CodeXLogo.9096cafa5420a2fcc83a.png",
+    "static/media/codex-logo.png": "/rttd-summary-webapp/static/media/codex-logo.babf7438fa229ef7c764.png",
     "index.html": "/rttd-summary-webapp/index.html",
-    "main.99c3924e.css.map": "/rttd-summary-webapp/static/css/main.99c3924e.css.map",
-    "main.15b13d5f.js.map": "/rttd-summary-webapp/static/js/main.15b13d5f.js.map",
+    "main.7f4d5b6a.css.map": "/rttd-summary-webapp/static/css/main.7f4d5b6a.css.map",
+    "main.7a64ac1a.js.map": "/rttd-summary-webapp/static/js/main.7a64ac1a.js.map",
     "787.4237a2d4.chunk.js.map": "/rttd-summary-webapp/static/js/787.4237a2d4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.99c3924e.css",
-    "static/js/main.15b13d5f.js"
+    "static/css/main.7f4d5b6a.css",
+    "static/js/main.7a64ac1a.js"
   ]
 }
