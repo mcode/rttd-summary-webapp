@@ -1,5 +1,7 @@
-import logo from "./CodeXLogo.png";
+import { useState } from "react";
 import axios from "axios";
+import DataView from "./components/DataView";
+import logo from "./CodeXLogo.png";
 import "./App.css";
 
 const {
@@ -26,7 +28,7 @@ async function fetchPatients(patientIdArray) {
       .get(`${baseURL}/Patient?_id=${patientId}`)
       .then((res) => res.data.entry[0].resource)
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
     patientResourceArray.push(patientResource);
   }
@@ -44,7 +46,7 @@ async function fetchProcedures(patientId) {
     .get(`${baseURL}/Procedure?subject:Patient=${patientId}`)
     .then((res) => res.data)
     .catch((e) => {
-      console.log(e);
+      console.error(e);
     });
 
   return procedureResources;
@@ -62,7 +64,7 @@ async function fetchVolumes(patientId) {
     .get(`${baseURL}/BodyStructure?patient:Patient=${patientId}`)
     .then((res) => res.data)
     .catch((e) => {
-      console.log(e);
+      console.error(e);
     });
 
   return volumeResources;
@@ -73,31 +75,44 @@ async function fetchVolumes(patientId) {
  * Logs the resulting map to the console
  */
 async function makeRequests() {
-  let resourceMap = new Map();
-  let patientResources = await fetchPatients([firstPatientId, secondPatientId]);
-
+  const resourceMap = new Map();
+  const patientResources = await fetchPatients([
+    firstPatientId,
+    secondPatientId,
+  ]);
   for (const patient of patientResources) {
     const procedures = await fetchProcedures(patient.id);
     const volumes = await fetchVolumes(patient.id);
-    resourceMap.set(patient.id, [patient, procedures, volumes]);
+    resourceMap.set(patient.id, [
+      mapPatient(patient),
+      mapPhase(procedures),
+      mapCourseSummary(procedures),
+      mapVolumes(volumes),
+    ]);
   }
 
-  console.log(resourceMap);
-  console.log(mapPatient(resourceMap.get("Patient-XRTS-03")[0]));
-  console.log(mapCourseSummary(resourceMap.get("Patient-XRTS-03")[1]));
-  console.log(mapPhase(resourceMap.get("Patient-XRTS-03")[1]));
-  console.log(mapVolumes(resourceMap.get("Patient-XRTS-03")[2]));
+  const patientIds = patientResources.map((patient) => patient.id);
+
+  return [patientIds, resourceMap];
 }
 
 function App() {
+  const [fetchedData, setFetchedData] = useState();
   return (
     <div className="App">
       <header className="App-header">
         <p>Radiotherapy Treatment Demo App</p>
       </header>
-      <button onClick={makeRequests} className="request-button">
+      <button
+        onClick={async () => {
+          const resp = await makeRequests();
+          setFetchedData(resp);
+        }}
+        className="my-4 p-1 rounded border border-black bg-slate-200 cursor-pointer transition-all shadow-lg active:shadow "
+      >
         Fetch Treatment Summaries
       </button>
+      {fetchedData && <DataView data={fetchedData} />}
       <img justify-content="center" src={logo} className="center" alt="logo" />
     </div>
   );
