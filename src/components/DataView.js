@@ -60,7 +60,7 @@ function DataView({ data }) {
     resourceMap
   );
   return (
-    <div className="container sm:mx-auto px-4 sm:px-0">
+    <>
       <PatientSelect
         options={patientsIds}
         value={selectedPatientId}
@@ -78,7 +78,7 @@ function DataView({ data }) {
         />
       ))}
       <CourseSummaryTable className="my-4" data={courseSummaryData} />
-    </div>
+    </>
   );
 }
 
