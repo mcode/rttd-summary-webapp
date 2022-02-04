@@ -17,6 +17,7 @@ function TreatmentPhaseTable({ data, title, className }) {
   }
   const phaseData = { ...data };
   delete phaseData["Total Dose Delivered from Phase [cGy]"];
+  delete phaseData["Dose Per Fraction [cGy]"];
   return (
     <div className={className}>
       {/* Display the base phase data with a simple table */}
