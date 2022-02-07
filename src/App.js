@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import DataView from "./components/DataView";
-import logo from "./CodeXLogo.png";
-import "./App.css";
+import Header from "./components/Header";
+import LoadingAnimation from "./components/LoadingAnimation";
 
 const {
   mapPatient,
@@ -97,24 +97,28 @@ async function makeRequests() {
 }
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [fetchedData, setFetchedData] = useState();
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>Radiotherapy Treatment Demo App</p>
-      </header>
-      <button
-        onClick={async () => {
-          const resp = await makeRequests();
-          setFetchedData(resp);
-        }}
-        className="my-4 p-1 rounded border border-black bg-slate-200 cursor-pointer transition-all shadow-lg active:shadow "
-      >
-        Fetch Treatment Summaries
-      </button>
-      {fetchedData && <DataView data={fetchedData} />}
-      <img justify-content="center" src={logo} className="center" alt="logo" />
-    </div>
+    <>
+      <Header />
+      <div className="container sm:mx-auto px-4 sm:px-0">
+        <button
+          onClick={async () => {
+            setLoading(true);
+            const resp = await makeRequests();
+            setLoading(false);
+            setFetchedData(resp);
+          }}
+          className="my-4 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 cursor-pointer transition-all shadow-lg active:shadow "
+        >
+          Fetch Treatment Summaries
+        </button>
+        {loading && <LoadingAnimation />}
+
+        {fetchedData && <DataView data={fetchedData} />}
+      </div>
+    </>
   );
 }
 

@@ -37,10 +37,6 @@ function mapCourseSummary(procedure) {
   output["Treatment Intent"] = intent
     ? `SCT#${intent.code} "${intent.display}"`
     : undefined;
-  output["Treatment Termination Reason"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/STU2/StructureDefinition-mcode-treatment-termination-reason.html').valueCodeableConcept.coding.display"
-  )[0];
   output["Start Date"] = summary.performedPeriod.start;
   output["End Date"] = summary.performedPeriod.end;
   let modality = fhirpath.evaluate(
@@ -113,9 +109,25 @@ function mapPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Dose Per Fraction [cGy]"] = output[
-      "Total Dose Delivered from Phase [cGy]"
-    ].map((dose) => dose / output["Number of Fractions Delivered"]);
+    const numFractions = output["Number of Fractions Delivered"];
+    const FAILED_DOSE_PER_FRACTION_STR = "Could Not Compute";
+    // If we can't compute dose per fraction, communicate that
+    if (Number.isNaN(Number(numFractions)) || numFractions === 0) {
+      output["Dose Per Fraction [cGy]"] = output[
+        "Total Dose Delivered from Phase [cGy]"
+      ].map(() => FAILED_DOSE_PER_FRACTION_STR);
+    } else {
+      // Ensure that any failed computations aren't just NaN's
+      output["Dose Per Fraction [cGy]"] = output[
+        "Total Dose Delivered from Phase [cGy]"
+      ]
+        .map((dose) => dose / numFractions)
+        .map((dosePerFraction) =>
+          Number.isNaN(dosePerFraction)
+            ? FAILED_DOSE_PER_FRACTION_STR
+            : dosePerFraction
+        );
+    }
     outputs.push(output);
   });
   return outputs;
@@ -148,7 +160,6 @@ function mapVolumes(volumes) {
     output["Location Qualifier Code"] = volume.locationQualifier
       ? `SCT#${volume.locationQualifier[0].coding[0].code} "${volume.locationQualifier[0].coding[0].display}"`
       : undefined;
-    output["Laterality Qualifier Code"] = undefined;
     outputs.push(output);
   });
   return outputs;

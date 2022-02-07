@@ -11,7 +11,7 @@ function PatientSelect({ options, value, setValue }) {
         id="patientSelect"
         value={value}
         onChange={handleChange}
-        className="block my-1 p-2 rounded border border-gray-300 bg-slate-100 font-light"
+        className="block my-1 p-2 rounded border border-gray-300 bg-slate-100 font-light cursor-pointer"
       >
         {options.map((option) => (
           <option value={option} key={option}>
