@@ -109,25 +109,6 @@ function mapPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    const numFractions = output["Number of Fractions Delivered"];
-    const FAILED_DOSE_PER_FRACTION_STR = "Could Not Compute";
-    // If we can't compute dose per fraction, communicate that
-    if (Number.isNaN(Number(numFractions)) || numFractions === 0) {
-      output["Dose Per Fraction [cGy]"] = output[
-        "Total Dose Delivered from Phase [cGy]"
-      ].map(() => FAILED_DOSE_PER_FRACTION_STR);
-    } else {
-      // Ensure that any failed computations aren't just NaN's
-      output["Dose Per Fraction [cGy]"] = output[
-        "Total Dose Delivered from Phase [cGy]"
-      ]
-        .map((dose) => dose / numFractions)
-        .map((dosePerFraction) =>
-          Number.isNaN(dosePerFraction)
-            ? FAILED_DOSE_PER_FRACTION_STR
-            : dosePerFraction
-        );
-    }
     outputs.push(output);
   });
   return outputs;
