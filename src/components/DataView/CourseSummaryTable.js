@@ -1,8 +1,10 @@
 import SimpleDataTable from "./SimpleDataTable";
 import MultiEntryDataTable from "./MultiEntryDataTable";
 
-function CourseSummaryTable({ data, className }) {
-  const numVolumes = data["Number of Delivered Fractions"].length;
+function CourseSummaryTable({ data = {}, className }) {
+  const numVolumes =
+    data["Number of Delivered Fractions"] &&
+    data["Number of Delivered Fractions"].length;
   const volumesData = [];
   for (let i = 0; i < numVolumes; i++) {
     volumesData.push({

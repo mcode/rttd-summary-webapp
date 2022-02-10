@@ -3,15 +3,20 @@ import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import "./table.css";
 
-function MultiEntryDataTable({ dataArray, title, columnTitle, className }) {
-  // Don't render if there is no dataArray
-  if (dataArray.length === 0) return;
-  const exampleInstance = dataArray[0];
-  const keys = Object.keys(exampleInstance);
+function MultiEntryDataTable({
+  dataArray = [],
+  title,
+  columnTitle,
+  className,
+}) {
+  const exampleInstance = dataArray.length > 0 && dataArray[0];
+  const keys = exampleInstance && Object.keys(exampleInstance);
   //  Each row is the key followed by all the values it follows.
-  const rows = keys.map((k, i) => {
-    return [k].concat(dataArray.map((elem) => elem[k]));
-  });
+  const rows = keys
+    ? keys.map((k, i) => {
+        return [k].concat(dataArray.map((elem) => elem[k]));
+      })
+    : [];
 
   return (
     <div

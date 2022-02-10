@@ -2,9 +2,9 @@ import _ from "lodash";
 import SimpleDataTable from "./SimpleDataTable";
 import MultiEntryDataTable from "./MultiEntryDataTable";
 
-function TreatmentPhaseTable({ data, title, className }) {
-  // Flatten so we don't make space for empty entries
-  const numVolumes = _.flatten(
+function TreatmentPhaseTable({ data = {}, title, className }) {
+  // Compact so we don't make space for empty entries
+  const numVolumes = _.compact(
     data["Total Dose Delivered from Phase [cGy]"]
   ).length;
   const volumesData = [];

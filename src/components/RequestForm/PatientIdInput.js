@@ -1,4 +1,5 @@
 import { Plus } from "react-feather";
+import PatientIdList from "./PatientIdList";
 
 function PatientIdInput({
   patientIdInput,
@@ -46,7 +47,7 @@ function PatientIdInput({
   }
 
   return (
-    <div id="patient-ids-section " className="mb-4">
+    <div id="patient-ids-section" className="mb-4">
       <label className="text-lg italic mb-1" htmlFor="patientIds">
         Patient IDs
       </label>
@@ -65,6 +66,9 @@ function PatientIdInput({
           <Plus className="inline m-2" size={24} />
         </button>
       </div>
+      {patientIds.length > 0 && (
+        <PatientIdList patientIds={patientIds} setPatientIds={setPatientIds} />
+      )}
     </div>
   );
 }
