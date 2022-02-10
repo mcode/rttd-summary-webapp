@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Trash, Plus } from "react-feather";
 import axios from "axios";
 import DataView from "./components/DataView/DataView";
 import Header from "./components/Header";
 import LoadingAnimation from "./components/LoadingAnimation";
-import FetchDataButton from "./components/RequestForm/FetchDataButton";
+import RequestForm from "./components/RequestForm/RequestForm";
 
 const {
   mapPatient,
@@ -105,117 +104,28 @@ function App() {
   );
   const [patientIdInput, setPatientIdInput] = useState("");
   const [patientIds, setPatientIds] = useState([]);
-  function addToPatientIds() {
-    if (patientIdInput === "") return;
-    setPatientIds([patientIdInput, ...patientIds]);
-    setPatientIdInput("");
-  }
-  function removeIthPatientId(index) {
-    if (index < 0 || index > patientIds.length) return;
-    setPatientIds(
-      patientIds
-        .slice(0, index)
-        .concat(patientIds.slice(index + 1, patientIds.length))
-    );
-  }
   const [fetchedData, setFetchedData] = useState();
   return (
     <>
       <Header />
-      <div className="container sm:mx-auto px-4 sm:px-0">
-        <form
-          className="flex flex-col mt-4 max-w-md"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            const resp = await makeRequests();
-            setLoading(false);
-            setFetchedData(resp);
-          }}
-        >
-          {/* Input for the FHIR server URL */}
-          <label className="text-lg italic mb-1" htmlFor="serverUrl">
-            FHIR Server URL
-          </label>
-          <input
-            type="url"
-            id="serverUrl"
-            name="serverUrl"
-            placeholder="https://api.logicahealth.org/RTTD/open"
-            pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)"
-            className="border border-slate-500 mb-4 p-2"
-            value={serverUrl}
-            onChange={(e) => {
-              const value = e.target.value;
-              console.log(value);
-              setServerUrl(value);
-            }}
+      <div className="container grid grid-cols-4 sm:mx-auto px-4 sm:px-0 mt-4">
+        <div className="col-span-4 sm:col-span-1 mr-0 sm:mr-2">
+          <RequestForm
+            makeRequests={makeRequests}
+            setLoading={setLoading}
+            serverUrl={serverUrl}
+            setServerUrl={setServerUrl}
+            patientIdInput={patientIdInput}
+            setPatientIdInput={setPatientIdInput}
+            patientIds={patientIds}
+            setPatientIds={setPatientIds}
+            setFetchedData={setFetchedData}
           />
-          {/* Input component for entering a list of patient ids */}
-          <div id="patient-ids-section " className="mb-4">
-            <label className="text-lg italic mb-1" htmlFor="patientIds">
-              Patient IDs
-            </label>
-            <div id="id-input-row" className="flex rounded-t-lg mb-4">
-              <input
-                type="text"
-                id="patientIds"
-                name="patientIds"
-                placeholder="e.g. PatientMrn123"
-                className="border border-slate-500 p-2 w-10/12"
-                value={patientIdInput}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setPatientIdInput(value);
-                }}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    // Avoid triggering the submit logic
-                    e.preventDefault();
-                    addToPatientIds();
-                  }
-                }}
-              />
-              <button
-                type="button"
-                className=""
-                onClick={(e) => {
-                  e.preventDefault();
-                  addToPatientIds();
-                }}
-              >
-                <Plus className="inline m-2" size={24} />
-              </button>
-            </div>
-            {patientIds.length > 0 && (
-              <ul className="max-h-72 overflow-y-auto border border-slate-500 ">
-                {patientIds.map((id, i) => {
-                  return (
-                    <li
-                      className="flex text-base border-b last:border-b-0 border-slate-500 w-full p-2 justify-between items-center"
-                      key={i}
-                    >
-                      {id}
-                      <button
-                        type="button"
-                        className="flex"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeIthPatientId(i);
-                        }}
-                      >
-                        <Trash className="inline" size={16} />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-          <FetchDataButton />
-        </form>
-        {loading && <LoadingAnimation />}
-        {fetchedData && <DataView data={fetchedData} />}
+        </div>
+        <div className="col-span-4 sm:col-span-3 ml-0 sm:ml-2">
+          {loading && <LoadingAnimation />}
+          {fetchedData && <DataView data={fetchedData} />}
+        </div>
       </div>
     </>
   );

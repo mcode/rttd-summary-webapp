@@ -1,6 +1,6 @@
 function LoadingAnimation() {
   return (
-    <div className="w-full">
+    <div className="w-full mx-auto">
       <svg
         className="h-10 w-10 mx-auto "
         viewBox="0 0 38 38"
