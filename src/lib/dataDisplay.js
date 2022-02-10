@@ -1,6 +1,6 @@
 import _, { isBoolean } from "lodash";
 import { DateTime } from "luxon";
-import EmptyComponent from "../components/EmptyComponent";
+import EmptyComponent from "../components/DataView/EmptyComponent";
 
 function dateFormat(data) {
   return DateTime.fromISO(data).toLocaleString();

@@ -1,4 +1,4 @@
-import { dataDisplay } from "../lib/dataDisplay";
+import { dataDisplay } from "../../lib/dataDisplay";
 
 function TableData({ isFirstCol, data }) {
   return (
