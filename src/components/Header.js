@@ -1,4 +1,4 @@
-import logo from "../codex-logo.png";
+import logo from "../assets/codex-logo.png";
 function Header() {
   return (
     <div className="bg-slate-600 w-screen max-w-full">
