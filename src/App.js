@@ -67,7 +67,6 @@ function App() {
           />
         </div>
         <div className="col-span-4 sm:col-span-3 ml-0 sm:ml-2">
-          {loading && <LoadingAnimation />}
           {resourceMap && (
             <DataView
               resourceMap={resourceMap}
@@ -75,6 +74,7 @@ function App() {
               patientIds={searchedPatientIds}
             />
           )}
+          {loading && <LoadingAnimation />}
         </div>
       </div>
     </>
