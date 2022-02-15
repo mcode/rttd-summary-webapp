@@ -4,6 +4,7 @@ import TreatmentPhaseTable from "./TreatmentPhaseTable";
 import CourseSummaryTable from "./CourseSummaryTable";
 import PatientSelect from "./PatientSelect";
 import { useState } from "react";
+import _ from "lodash";
 
 /**
  * Parse and reformat patient data for visualization
@@ -11,7 +12,8 @@ import { useState } from "react";
  * @returns Patient data formatted for the PatientTable visualizer
  */
 function getPatientData(selectedPatientId, resourceMap) {
-  return resourceMap.get(selectedPatientId)[0];
+  const patientData = resourceMap.get(selectedPatientId);
+  return patientData && patientData[0];
 }
 
 /**
@@ -20,7 +22,8 @@ function getPatientData(selectedPatientId, resourceMap) {
  * @returns Treatment volume data formatted for the CourseSummaryTable visualizer
  */
 function getTreatmentVolumesData(selectedPatientId, resourceMap) {
-  return resourceMap.get(selectedPatientId)[3];
+  const patientData = resourceMap.get(selectedPatientId);
+  return patientData && patientData[3];
 }
 
 /**
@@ -29,7 +32,8 @@ function getTreatmentVolumesData(selectedPatientId, resourceMap) {
  * @returns Phase data formatted for the TreatmentPhaseTable visualizer
  */
 function getTreatmentPhaseData(selectedPatientId, resourceMap) {
-  return resourceMap.get(selectedPatientId)[1];
+  const patientData = resourceMap.get(selectedPatientId);
+  return patientData && patientData[1];
 }
 
 /**
@@ -38,13 +42,13 @@ function getTreatmentPhaseData(selectedPatientId, resourceMap) {
  * @returns Course summary data formatted for the CourseSummaryTable visualizer
  */
 function getCourseSummaryData(selectedPatientId, resourceMap) {
-  return resourceMap.get(selectedPatientId)[2];
+  const patientData = resourceMap.get(selectedPatientId);
+  return patientData && patientData[2];
 }
 
-function DataView({ data }) {
-  const [patientsIds, resourceMap] = data;
+function DataView({ resourceMap = {}, patientIds = [] }) {
   const [selectedPatientId, setSelectedPatientId] = useState(
-    patientsIds.length !== 0 && patientsIds[0]
+    patientIds.length !== 0 && patientIds[0]
   );
   const patientData = getPatientData(selectedPatientId, resourceMap);
   const treatmentPhaseData = getTreatmentPhaseData(
@@ -59,25 +63,36 @@ function DataView({ data }) {
     selectedPatientId,
     resourceMap
   );
+  const hasPatientData =
+    !_.isEmpty(patientData) ||
+    !_.isEmpty(treatmentPhaseData) ||
+    !_.isEmpty(treatmentVolumesData) ||
+    !_.isEmpty(courseSummaryData);
   return (
     <>
       <PatientSelect
-        options={patientsIds}
+        options={patientIds}
         value={selectedPatientId}
         setValue={setSelectedPatientId}
       />
-      <PatientTable className="my-4" data={patientData} />
-      {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
-      {/* <DiagnosisTable className="my-4" data={diagnosisData} /> */}
-      <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
-      {treatmentPhaseData.map((phase, i) => (
-        <TreatmentPhaseTable
-          key={phase["Start Date"]}
-          data={phase}
-          title={`Phase ${i + 1}`}
-        />
-      ))}
-      <CourseSummaryTable className="my-4" data={courseSummaryData} />
+      {!hasPatientData && <p>No Patient Data found for {selectedPatientId}</p>}
+      {hasPatientData && (
+        <>
+          <PatientTable className="my-4" data={patientData} />
+          {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
+          {/* <DiagnosisTable className="my-4" data={diagnosisData} /> */}
+          <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
+          {treatmentPhaseData &&
+            treatmentPhaseData.map((phase, i) => (
+              <TreatmentPhaseTable
+                key={phase["Start Date"]}
+                data={phase}
+                title={`Phase ${i + 1}`}
+              />
+            ))}
+          <CourseSummaryTable className="my-4" data={courseSummaryData} />
+        </>
+      )}
     </>
   );
 }

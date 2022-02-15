@@ -1,6 +1,6 @@
 import SimpleDataTable from "./SimpleDataTable";
 
-function PatientTable({ data, className }) {
+function PatientTable({ data = {}, className }) {
   return (
     <SimpleDataTable
       data={data}

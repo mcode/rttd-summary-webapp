@@ -1,6 +1,6 @@
 import MultiEntryDataTable from "./MultiEntryDataTable";
 
-function TreatmentVolumeTable({ data, className }) {
+function TreatmentVolumeTable({ data = [], className }) {
   return (
     <MultiEntryDataTable
       dataArray={data}

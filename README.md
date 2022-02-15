@@ -10,6 +10,8 @@ A web application for viewing CODEx modeled [Radiation Therapy Treatment Data](h
   - Via [Create React App](https://create-react-app.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
   - [Interactive Cheat Sheet](https://nerdcave.com/tailwind-cheat-sheet)
+- [Feather Icons](https://feathericons.com/)
+  - Specifically using [react-feather](https://github.com/feathericons/react-feather)
 
 ## Quick start
 
