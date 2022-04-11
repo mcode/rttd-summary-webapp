@@ -4,10 +4,14 @@ function GenderInput({ currentPatientQuery, setCurrentPatientQuery }) {
    * @param {Event} e
    */
   function handleInputUpdate(e) {
-    const value = e.target.value;
+    const value = e.target.value.toLowerCase();
+    let queryGender =
+      currentPatientQuery.gender && currentPatientQuery.gender === value
+        ? undefined
+        : value;
     setCurrentPatientQuery({
       ...currentPatientQuery,
-      gender: value.toLowerCase(),
+      gender: queryGender,
     });
   }
 
@@ -25,7 +29,7 @@ function GenderInput({ currentPatientQuery, setCurrentPatientQuery }) {
         {GENDER_OPTIONS.map((option) => (
           <div key={option} className="space-x-1">
             <input
-              type="radio"
+              type="checkbox"
               id={option}
               name="gender"
               key={option}
