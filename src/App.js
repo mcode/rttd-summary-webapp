@@ -9,7 +9,6 @@ import {
 } from "./fetchingUtils";
 import FhirServerUrlInput from "./components/RequestForm/FhirServerUrlInput";
 import PatientQueryList from "./components/RequestForm/PatientQueryList";
-import FetchDataButton from "./components/RequestForm/FetchDataButton";
 import DataView from "./components/DataView/DataView";
 import Header from "./components/Header";
 import LoadingAnimation from "./components/LoadingAnimation";

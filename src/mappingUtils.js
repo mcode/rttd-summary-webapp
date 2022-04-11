@@ -30,7 +30,7 @@ function mapCourseSummary(procedure) {
   let output = {};
   output["Course Label"] = summary.identifier
     ? summary.identifier[0].value
-    : "Unknown";
+    : "N/A";
   output["Treatment Status"] = summary.status;
   let intent = fhirpath.evaluate(
     summary,
@@ -88,7 +88,7 @@ function mapPhase(procedure) {
     let output = {};
     output["Phase Label"] = phase.identifier
       ? phase.identifier[0].value
-      : "Unknown";
+      : "N/A";
     output["Start Date"] = phase.performedPeriod.start;
     output["End Date"] = phase.performedPeriod.end;
     let modality = fhirpath.evaluate(
