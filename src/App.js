@@ -1,6 +1,14 @@
 import _ from "lodash";
 import { useState } from "react";
-import { fetchPatients, fetchProcedures, fetchVolumes } from "./fetchingUtils";
+import { Plus } from "react-feather";
+import {
+  fetchPatients,
+  fetchProcedures,
+  fetchVolumes,
+  generateQueryUrl,
+} from "./fetchingUtils";
+import FhirServerUrlInput from "./components/RequestForm/FhirServerUrlInput";
+import PatientQueryList from "./components/RequestForm/PatientQueryList";
 import DataView from "./components/DataView/DataView";
 import Header from "./components/Header";
 import LoadingAnimation from "./components/LoadingAnimation";
@@ -14,15 +22,36 @@ const {
 } = require("./mappingUtils.js");
 
 const BASE_URL = "https://api.logicahealth.org/RTTD/open";
-const PATIENT_IDS = ["Patient-XRTS-01", "Patient-XRTS-03"];
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [serverUrl, setServerUrl] = useState(BASE_URL);
-  const [patientIdInput, setPatientIdInput] = useState("");
-  const [patientIds, setPatientIds] = useState(PATIENT_IDS);
   const [resourceMap, setResourceMap] = useState(new Map());
   const [searchedPatientIds, setSearchedPatientIds] = useState([]);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [currentPatientQuery, setCurrentPatientQuery] = useState({});
+  const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
+  const [patientQueries, setPatientQueries] = useState([
+    {
+      id: "Patient-XRTS-01",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-03",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+  ]);
+
+  function openRequestForm(queryIndex) {
+    setCurrentPatientQueryIdx(queryIndex);
+    setShowRequestForm(true);
+  }
 
   /**
    * Creates a map with each patient Id as a key, and an array of corresponding resources as the value.
@@ -30,8 +59,13 @@ function App() {
    */
   async function makeRequests() {
     const resourceMap = new Map();
+    // Convert the query parameter objects into query urls
+    const searchQueries = patientQueries.map((queryObj) =>
+      generateQueryUrl(serverUrl, queryObj)
+    );
+
     // Compact the return result to remove empty values
-    const patientResources = await fetchPatients(serverUrl, patientIds).then(
+    const patientResources = await fetchPatients(searchQueries).then(
       (patients) => _.compact(patients)
     );
     for (const patient of patientResources) {
@@ -44,7 +78,7 @@ function App() {
         mapVolumes(volumes),
       ]);
     }
-    setSearchedPatientIds(patientIds);
+    setSearchedPatientIds(patientResources.map((patient) => patient.id));
     setResourceMap(resourceMap);
   }
 
@@ -52,19 +86,42 @@ function App() {
     <>
       <Header />
       <div className="container grid grid-cols-4 sm:mx-auto px-4 sm:px-0 mt-4">
-        <div className="col-span-4 sm:col-span-1 mr-0 sm:mr-2">
-          <RequestForm
-            makeRequests={makeRequests}
-            setLoading={setLoading}
+        <div className="col-span-4 sm:col-span-1 mr-0 sm:mr-2 flex flex-col">
+          {/* Input for the FHIR server URL */}
+          <FhirServerUrlInput
             serverUrl={serverUrl}
             setServerUrl={setServerUrl}
-            patientIdInput={patientIdInput}
-            setPatientIdInput={setPatientIdInput}
-            patientIds={patientIds}
-            setPatientIds={setPatientIds}
-            setResourceMap={setResourceMap}
-            setSearchedPatientIds={setSearchedPatientIds}
           />
+          <span className="flex text-base last:border-b-0 w-full justify-between items-center">
+            <label className="text-lg mb-1" htmlFor="patientQueries">
+              Patient Queries
+            </label>
+            <button
+              type="button"
+              className="flex"
+              onClick={(e) => {
+                openRequestForm(patientQueries.length);
+              }}
+            >
+              <Plus className="inline m-2" size={24} />
+            </button>
+          </span>
+          <PatientQueryList
+            patientQueries={patientQueries}
+            setPatientQueries={setPatientQueries}
+            setCurrentPatientQuery={setCurrentPatientQuery}
+            openRequestForm={openRequestForm}
+          />
+          <button
+            className="my-4 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 cursor-pointer transition-all shadow-lg active:shadow "
+            onClick={async (e) => {
+              setLoading(true);
+              await makeRequests();
+              setLoading(false);
+            }}
+          >
+            Fetch Treatment Summaries
+          </button>
         </div>
         <div className="col-span-4 sm:col-span-3 ml-0 sm:ml-2">
           {resourceMap && (
@@ -77,6 +134,18 @@ function App() {
           {loading && <LoadingAnimation />}
         </div>
       </div>
+      {showRequestForm && (
+        <RequestForm
+          currentPatientQuery={currentPatientQuery}
+          setCurrentPatientQuery={setCurrentPatientQuery}
+          patientQueries={patientQueries}
+          setPatientQueries={setPatientQueries}
+          display={showRequestForm}
+          setDisplay={setShowRequestForm}
+          currentPatientQueryIdx={currentPatientQueryIdx}
+          setCurrentPatientQueryIdx={setCurrentPatientQueryIdx}
+        />
+      )}
     </>
   );
 }

@@ -28,7 +28,9 @@ function mapCourseSummary(procedure) {
     "Bundle.entry.where(resource.meta.profile.first() = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
   )[0];
   let output = {};
-  output["Course Label"] = summary.identifier[0].value;
+  output["Course Label"] = summary.identifier
+    ? summary.identifier[0].value
+    : "N/A";
   output["Treatment Status"] = summary.status;
   let intent = fhirpath.evaluate(
     summary,
@@ -84,7 +86,9 @@ function mapPhase(procedure) {
   let outputs = [];
   phases.forEach((phase) => {
     let output = {};
-    output["Phase Label"] = phase.identifier[0].value;
+    output["Phase Label"] = phase.identifier
+      ? phase.identifier[0].value
+      : "N/A";
     output["Start Date"] = phase.performedPeriod.start;
     output["End Date"] = phase.performedPeriod.end;
     let modality = fhirpath.evaluate(

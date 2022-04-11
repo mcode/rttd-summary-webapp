@@ -1,24 +1,71 @@
 import axios from "axios";
+import _ from "lodash";
 
 /**
- * Takes an array of patient IDs and fetches FHIR resources for each of them
- * @param {String[]} patientIdArray - An array of patient Ids to fetch resources for
+ * Takes an array of patient query URLS and fetches FHIR resources for each of them
+ * @param {String[]} patientQueries - An array of query urls to perform GET requests on
  * @returns {Object[]} Returns an array of FHIR patient resources
  */
-async function fetchPatients(serverUrl, patientIdArray) {
+async function fetchPatients(patientQueries) {
   let patientResourceArray = [];
 
-  for (const patientId of patientIdArray) {
-    let patientResource = await axios
-      .get(`${serverUrl}/Patient?_id=${patientId}`)
-      .then((res) => res.data.entry[0].resource)
+  for (const query of patientQueries) {
+    await axios
+      .get(query)
+      .then((res) => {
+        res.data.entry.forEach((entry) => {
+          if (
+            !patientResourceArray.some(
+              (resource) => resource.id === entry.resource.id
+            )
+          ) {
+            patientResourceArray.push(entry.resource);
+          }
+        });
+      })
       .catch((e) => {
         console.error(e);
       });
-    patientResourceArray.push(patientResource);
   }
-
   return patientResourceArray;
+}
+
+/**
+ * Takes an array of patient query objects and generates search urls
+ * @param {String} serverUrl - The base server url
+ * @param {Object} queryObj - An object containing query parameters to search on
+ * @returns {String[]} Returns an array of FHIR search Urls
+ */
+function generateQueryUrl(serverUrl, queryObj) {
+  let urlStr = `${serverUrl}/Patient`;
+  const queryParams = Object.keys(queryObj).filter((key) => queryObj[key]);
+
+  if (queryParams.length === 0) return;
+
+  queryParams.forEach((param, idx) => {
+    const seperator = idx === 0 ? "?" : "&";
+
+    switch (param) {
+      case "id":
+        urlStr += `${seperator}_id=${queryObj[param]}`;
+        break;
+      case "givenName":
+        urlStr += `${seperator}given:exact=${queryObj[param]}`;
+        break;
+      case "familyName":
+        urlStr += `${seperator}family:exact=${queryObj[param]}`;
+        break;
+      case "birthDate":
+        urlStr += `${seperator}birthdate=${queryObj[param]}`;
+        break;
+      case "gender":
+        urlStr += `${seperator}gender=${queryObj[param]}`;
+        break;
+      default:
+        break;
+    }
+  });
+  return urlStr;
 }
 
 /**
@@ -55,4 +102,4 @@ async function fetchVolumes(serverUrl, patientId) {
   return volumeResources;
 }
 
-export { fetchPatients, fetchProcedures, fetchVolumes };
+export { fetchPatients, fetchProcedures, fetchVolumes, generateQueryUrl };
