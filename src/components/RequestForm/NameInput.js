@@ -13,7 +13,7 @@ function NameInput({ currentPatientQuery, setCurrentPatientQuery, nameType }) {
   }
 
   return (
-    <div id="birthdate-section" className="mb-4">
+    <div id="name-section" className="mb-4">
       <label className="text-lg m-1" htmlFor="nameInput">
         {`${nameType} Name`}
       </label>

@@ -48,11 +48,11 @@ function PatientQueryList({
   }
 
   return (
-    <ul className="max-h-72 overflow-y-auto border border-slate-500 ">
+    <ul className="max-h-72 overflow-y-auto">
       {patientQueries.map((patientQuery, i) => {
         return (
           <li
-            className="flex text-base border-b last:border-b-0 border-slate-500 w-full p-2 justify-between items-center"
+            className="flex text-base border border-b-0 last:border-b border-slate-500 w-full p-2 justify-between items-center"
             key={i}
           >
             <button
