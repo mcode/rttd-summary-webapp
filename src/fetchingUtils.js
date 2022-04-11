@@ -1,4 +1,5 @@
 import axios from "axios";
+import _ from "lodash";
 
 /**
  * Takes an array of patient query URLS and fetches FHIR resources for each of them
@@ -9,15 +10,23 @@ async function fetchPatients(patientQueries) {
   let patientResourceArray = [];
 
   for (const query of patientQueries) {
-    let patientResource = await axios
+    await axios
       .get(query)
-      .then((res) => res.data.entry[0].resource)
+      .then((res) => {
+        res.data.entry.forEach((entry) => {
+          if (
+            !patientResourceArray.some(
+              (resource) => resource.id === entry.resource.id
+            )
+          ) {
+            patientResourceArray.push(entry.resource);
+          }
+        });
+      })
       .catch((e) => {
         console.error(e);
       });
-    patientResourceArray.push(patientResource);
   }
-
   return patientResourceArray;
 }
 

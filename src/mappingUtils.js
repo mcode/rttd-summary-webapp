@@ -28,7 +28,7 @@ function mapCourseSummary(procedure) {
     "Bundle.entry.where(resource.meta.profile.first() = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
   )[0];
   let output = {};
-  output["Course Label"] = summary.identifier[0].value;
+  if (summary.identifier) output["Course Label"] = summary.identifier[0].value;
   output["Treatment Status"] = summary.status;
   let intent = fhirpath.evaluate(
     summary,
