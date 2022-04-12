@@ -25,6 +25,7 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
+    "lint": "eslint \"./src/**/*.js\"",
     "prepare": "husky install"
   },
   "eslintConfig": {
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.2",
+    "eslint": "^8.13.0",
     "gh-pages": "^3.2.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.2.2",
