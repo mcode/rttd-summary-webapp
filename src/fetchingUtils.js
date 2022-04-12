@@ -1,5 +1,4 @@
 import axios from "axios";
-import _ from "lodash";
 
 /**
  * Takes an array of patient query URLS and fetches FHIR resources for each of them
