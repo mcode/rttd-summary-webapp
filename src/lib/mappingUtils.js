@@ -13,7 +13,6 @@ function mapPatient(patient) {
   output["Date of Birth"] = patient.birthDate;
   output["Administrative Gender"] = patient.gender;
   output["Birth Sex"] = patient.extension[0].valueCode;
-  output["Deceased"] = patient.deceasedBoolean;
   return output;
 }
 
@@ -36,25 +35,19 @@ function mapCourseSummary(procedure) {
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding"
   )[0];
-  output["Treatment Intent"] = intent
-    ? `SCT#${intent.code} "${intent.display}"`
-    : undefined;
+  output["Treatment Intent"] = intent ? intent.display : undefined;
   output["Start Date"] = summary.performedPeriod.start;
   output["End Date"] = summary.performedPeriod.end;
   let modality = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
   )[0];
-  output["Modalities"] = modality
-    ? `SCT#${modality.code} "${modality.display}"`
-    : undefined;
+  output["Modalities"] = modality ? modality.display : undefined;
   let technique = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
   )[0];
-  output["Techniques"] = technique
-    ? `SCT#${technique.code} "${technique.display}"`
-    : undefined;
+  output["Techniques"] = technique ? technique.display : undefined;
   output["Number of Sessions"] = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
@@ -69,7 +62,7 @@ function mapCourseSummary(procedure) {
   );
   output["Body Sites"] = fhirpath
     .evaluate(summary, "Procedure.bodySite.coding")
-    .map((coding) => `SCT#${coding.code} "${coding.display}"`);
+    .map((coding) => coding.display);
   return output;
 }
 
@@ -95,16 +88,12 @@ function mapPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
     )[0];
-    output["Modalities"] = modality
-      ? `SCT#${modality.code} "${modality.display}"`
-      : undefined;
+    output["Modalities"] = modality ? modality.display : undefined;
     let technique = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
     )[0];
-    output["Techniques"] = technique
-      ? `SCT#${technique.code} "${technique.display}"`
-      : undefined;
+    output["Techniques"] = technique ? technique.display : undefined;
     output["Number of Fractions Delivered"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-delivered').valueUnsignedInt"
@@ -132,18 +121,14 @@ function mapVolumes(volumes) {
       volume,
       "BodyStructure.identifier.where(use = 'usual').value"
     )[0];
-    output["UID"] = fhirpath.evaluate(
-      volume,
-      "BodyStructure.identifier.where(use = 'official').value"
-    )[0];
     output["Type"] = volume.morphology
-      ? `SCT#${volume.morphology.coding[0].code} "${volume.morphology.coding[0].display}"`
+      ? volume.morphology.coding[0].display
       : undefined;
-    output["Location Code"] = volume.location
-      ? `SCT#${volume.location.coding[0].code} "${volume.location.coding[0].display}"`
+    output["Location"] = volume.location
+      ? volume.location.coding[0].display
       : undefined;
-    output["Location Qualifier Code"] = volume.locationQualifier
-      ? `SCT#${volume.locationQualifier[0].coding[0].code} "${volume.locationQualifier[0].coding[0].display}"`
+    output["Location Qualifier"] = volume.locationQualifier
+      ? volume.locationQualifier[0].coding[0].display
       : undefined;
     outputs.push(output);
   });

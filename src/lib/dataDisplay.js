@@ -3,7 +3,11 @@ import { DateTime } from "luxon";
 import EmptyComponent from "../components/DataView/EmptyComponent";
 
 function dateFormat(data) {
-  return DateTime.fromISO(data).toLocaleString();
+  return DateTime.fromISO(data).toLocaleString({
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function isDate(data) {
