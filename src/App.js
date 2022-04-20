@@ -6,20 +6,19 @@ import {
   fetchProcedures,
   fetchVolumes,
   generateQueryUrl,
-} from "./fetchingUtils";
+} from "./lib/fetchingUtils";
+import {
+  mapPatient,
+  mapCourseSummary,
+  mapPhase,
+  mapVolumes,
+} from "./lib/mappingUtils";
 import FhirServerUrlInput from "./components/RequestForm/FhirServerUrlInput";
 import PatientQueryList from "./components/RequestForm/PatientQueryList";
 import DataView from "./components/DataView/DataView";
 import Header from "./components/Header";
 import LoadingAnimation from "./components/LoadingAnimation";
 import RequestForm from "./components/RequestForm/RequestForm";
-
-const {
-  mapPatient,
-  mapCourseSummary,
-  mapPhase,
-  mapVolumes,
-} = require("./mappingUtils.js");
 
 const BASE_URL = "https://api.logicahealth.org/RTTD/open";
 
