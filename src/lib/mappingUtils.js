@@ -13,7 +13,6 @@ function mapPatient(patient) {
   output["Date of Birth"] = patient.birthDate;
   output["Administrative Gender"] = patient.gender;
   output["Birth Sex"] = patient.extension[0].valueCode;
-  output["Deceased"] = patient.deceasedBoolean;
   return output;
 }
 
@@ -131,10 +130,6 @@ function mapVolumes(volumes) {
     output["Volume Label"] = fhirpath.evaluate(
       volume,
       "BodyStructure.identifier.where(use = 'usual').value"
-    )[0];
-    output["UID"] = fhirpath.evaluate(
-      volume,
-      "BodyStructure.identifier.where(use = 'official').value"
     )[0];
     output["Type"] = volume.morphology
       ? `SCT#${volume.morphology.coding[0].code} "${volume.morphology.coding[0].display}"`
