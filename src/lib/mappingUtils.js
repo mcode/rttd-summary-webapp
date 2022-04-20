@@ -124,10 +124,10 @@ function mapVolumes(volumes) {
     output["Type"] = volume.morphology
       ? volume.morphology.coding[0].display
       : undefined;
-    output["Location Code"] = volume.location
+    output["Location"] = volume.location
       ? volume.location.coding[0].display
       : undefined;
-    output["Location Qualifier Code"] = volume.locationQualifier
+    output["Location Qualifier"] = volume.locationQualifier
       ? volume.locationQualifier[0].coding[0].display
       : undefined;
     outputs.push(output);
