@@ -24,7 +24,7 @@ function mapPatient(patient) {
 function mapCourseSummary(procedure) {
   let summary = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.meta.profile.first() = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
+    "Bundle.entry.where(resource.meta.profile.where($this = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary')).resource"
   )[0];
   let output = {};
   output["Course Label"] = summary.identifier
@@ -108,6 +108,48 @@ function mapPhase(procedure) {
 }
 
 /**
+ * Takes a bundle of serviceRequests returned and returns an array of mappings of PlannedCourse data to be displayed in the table
+ * Based on https://build.fhir.org/ig/HL7/codex-radiation-therapy/StructureDefinition-codexrt-radiotherapy-planned-course.html
+ * @param {Object} procedure - A bundle of serviceRequests
+ * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
+ */
+function mapPlannedCourses(serviceRequests) {
+  let plannedCourses = fhirpath.evaluate(
+    serviceRequests,
+    "Bundle.entry.where(resource.meta.profile.where($this = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-planned-course')).resource"
+  );
+  let outputs = [];
+  plannedCourses.forEach((plannedCourse) => {
+    let output = {};
+    output["Course Label"] = plannedCourse.identifier
+      ? plannedCourse.identifier[0].value
+      : "N/A";
+    // output["Start Date"] = phase.performedPeriod.start;
+    // output["End Date"] = phase.performedPeriod.end;
+    // let modality = fhirpath.evaluate(
+    //   phase,
+    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
+    // )[0];
+    // output["Modalities"] = modality ? modality.display : undefined;
+    // let technique = fhirpath.evaluate(
+    //   phase,
+    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
+    // )[0];
+    // output["Techniques"] = technique ? technique.display : undefined;
+    // output["Number of Fractions Delivered"] = fhirpath.evaluate(
+    //   phase,
+    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-delivered').valueUnsignedInt"
+    // )[0];
+    // output["Total Dose Delivered from Phase [cGy]"] = fhirpath.evaluate(
+    //   phase,
+    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
+    // );
+    outputs.push(output);
+  });
+  return outputs;
+}
+
+/**
  * Takes a bundle of body structures returned by makeRequests and returns an array of mappings of Volume data to be displayed in the table
  * @param {Object} volumes - A bundle of radiotherapy volume body structures
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
@@ -135,4 +177,10 @@ function mapVolumes(volumes) {
   return outputs;
 }
 
-export { mapPatient, mapCourseSummary, mapPhase, mapVolumes };
+export {
+  mapPatient,
+  mapCourseSummary,
+  mapPhase,
+  mapVolumes,
+  mapPlannedCourses,
+};
