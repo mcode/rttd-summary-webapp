@@ -3,10 +3,12 @@ function TableHeader({ isFirstCol, text }) {
     <>
       <th
         scope="col"
-        className={`px-6 py-3 text-sm font-medium text-gray-900 `}
+        className={`px-6 py-3 font-medium text-gray-900 ${
+          isFirstCol ? "text-md" : "text-sm"
+        }`}
         style={{
           wordBreak: "break-word",
-          minWidth: isFirstCol ? "10rem" : "20rem",
+          minWidth: isFirstCol ? "12rem" : "20rem",
         }}
       >
         {text}
