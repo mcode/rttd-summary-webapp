@@ -151,20 +151,17 @@ function mapPlannedCourses(serviceRequests) {
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt.single()"
     )[0];
-    // Should only ever be one value for # fractions
     output["Number of Planned Fractions"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'fractions').valuePositiveInt"
-    )[0];
-    // Should only ever be one value for planned dosage
+    );
     output["Total Planned Dose to Course [cGy]"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
-    )[0];
+    );
     output["Body Sites"] = fhirpath
       .evaluate(plannedCourse, "ServiceRequest.bodySite.coding")
-      .map((coding) => coding.display)
-      .join("; ");
+      .map((coding) => coding.display);
     //NOT included yet
     // output["Energy or Isotope"]
     // output["Treatment Device"]

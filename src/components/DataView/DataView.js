@@ -2,6 +2,7 @@ import PatientTable from "./PatientTable";
 import TreatmentVolumeTable from "./TreatmentVolumeTable";
 import TreatmentPhaseTable from "./TreatmentPhaseTable";
 import CourseSummaryTable from "./CourseSummaryTable";
+import PlannedCourseTable from "./PlannedCourseTable";
 import PatientSelect from "./PatientSelect";
 import { useState } from "react";
 import _ from "lodash";
@@ -83,8 +84,6 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
     resourceMap
   );
 
-  console.log(plannedCourseData);
-
   const hasPatientData =
     !_.isEmpty(patientData) ||
     !_.isEmpty(treatmentPhaseData) ||
@@ -113,6 +112,7 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
                 title={`Phase ${i + 1}`}
               />
             ))}
+          <PlannedCourseTable className="my-4" data={plannedCourseData} />
           <CourseSummaryTable className="my-4" data={courseSummaryData} />
         </>
       )}

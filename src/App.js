@@ -34,7 +34,42 @@ function App() {
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
   const [patientQueries, setPatientQueries] = useState([
     {
+      id: "Patient-XRTS-01",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-02",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-01-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
       id: "Patient-XRTS-02-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-03-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-04-22A",
       givenName: "",
       familyName: "",
       birthDate: "",
