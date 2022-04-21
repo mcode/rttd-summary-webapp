@@ -73,8 +73,6 @@ function App() {
       const procedures = await fetchProcedures(serverUrl, patient.id);
       const volumes = await fetchVolumes(serverUrl, patient.id);
       const serviceRequests = await fetchServiceRequests(serverUrl, patient.id);
-      console.log(serviceRequests);
-      console.log(mapPlannedCourses(serviceRequests));
       resourceMap.set(patient.id, [
         mapPatient(patient),
         mapPhase(procedures),

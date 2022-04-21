@@ -116,7 +116,7 @@ function mapPhase(procedure) {
 function mapPlannedCourses(serviceRequests) {
   let plannedCourses = fhirpath.evaluate(
     serviceRequests,
-    "Bundle.entry.where(resource.meta.profile.where($this = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-planned-course')).resource"
+    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
   );
   let outputs = [];
   plannedCourses.forEach((plannedCourse) => {
@@ -124,26 +124,51 @@ function mapPlannedCourses(serviceRequests) {
     output["Course Label"] = plannedCourse.identifier
       ? plannedCourse.identifier[0].value
       : "N/A";
-    // output["Start Date"] = phase.performedPeriod.start;
-    // output["End Date"] = phase.performedPeriod.end;
-    // let modality = fhirpath.evaluate(
-    //   phase,
-    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
-    // )[0];
-    // output["Modalities"] = modality ? modality.display : undefined;
-    // let technique = fhirpath.evaluate(
-    //   phase,
-    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
-    // )[0];
-    // output["Techniques"] = technique ? technique.display : undefined;
-    // output["Number of Fractions Delivered"] = fhirpath.evaluate(
-    //   phase,
-    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-delivered').valueUnsignedInt"
-    // )[0];
-    // output["Total Dose Delivered from Phase [cGy]"] = fhirpath.evaluate(
-    //   phase,
-    //   "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
-    // );
+    output["Course Status"] = plannedCourse.status;
+    output["Request Intent"] = plannedCourse.intent;
+    output["Procedure Intent"] = fhirpath
+      .evaluate(
+        plannedCourse,
+        "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding"
+      )
+      .map((intent) => intent.display)[0];
+
+    output["Modalities"] = fhirpath
+      .evaluate(
+        plannedCourse,
+        "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
+      )
+      .map((modality) => modality.display)[0];
+    output["Techniques"] = fhirpath
+      .evaluate(
+        plannedCourse,
+        "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
+      )
+      .map((technique) => technique.display)
+      .join("; ");
+    // Should only ever be one value for # sessions
+    output["Number of Sessions"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt.single()"
+    )[0];
+    // Should only ever be one value for # fractions
+    output["Number of Planned Fractions"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'fractions').valuePositiveInt"
+    )[0];
+    // Should only ever be one value for planned dosage
+    output["Total Planned Dose to Course [cGy]"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
+    )[0];
+    output["Body Sites"] = fhirpath
+      .evaluate(plannedCourse, "ServiceRequest.bodySite.coding")
+      .map((coding) => coding.display)
+      .join("; ");
+    //NOT included yet
+    // output["Energy or Isotope"]
+    // output["Treatment Device"]
+
     outputs.push(output);
   });
   return outputs;

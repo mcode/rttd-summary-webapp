@@ -8,7 +8,8 @@ import _ from "lodash";
 
 /**
  * Parse and reformat patient data for visualization
- * @param {Object[]} data
+ * @param {Object[]} selectedPatientId Patient to get data for
+ * @param {Object} resourceMap All resources mapped from all available patient data
  * @returns Patient data formatted for the PatientTable visualizer
  */
 function getPatientData(selectedPatientId, resourceMap) {
@@ -18,7 +19,8 @@ function getPatientData(selectedPatientId, resourceMap) {
 
 /**
  * Parse and reformat treatment volume data for visualization
- * @param {Object[]} data
+ * @param {Object[]} selectedPatientId Patient to get data for
+ * @param {Object} resourceMap All resources mapped from all available patient data
  * @returns Treatment volume data formatted for the CourseSummaryTable visualizer
  */
 function getTreatmentVolumesData(selectedPatientId, resourceMap) {
@@ -28,7 +30,8 @@ function getTreatmentVolumesData(selectedPatientId, resourceMap) {
 
 /**
  * Parse and reformat phase data for visualization
- * @param {Object[]} data
+ * @param {Object[]} selectedPatientId Patient to get data for
+ * @param {Object} resourceMap All resources mapped from all available patient data
  * @returns Phase data formatted for the TreatmentPhaseTable visualizer
  */
 function getTreatmentPhaseData(selectedPatientId, resourceMap) {
@@ -37,8 +40,20 @@ function getTreatmentPhaseData(selectedPatientId, resourceMap) {
 }
 
 /**
+ * Parse and reformat planned course for visualization
+ * @param {Object[]} selectedPatientId Patient to get data for
+ * @param {Object} resourceMap All resources mapped from all available patient data
+ * @returns Phase data formatted for the PlannedCourseTable visualizer
+ */
+function getPlannedCourseData(selectedPatientId, resourceMap) {
+  const patientData = resourceMap.get(selectedPatientId);
+  return patientData && patientData[4];
+}
+
+/**
  * Parse and reformat course summary data for visualization
- * @param {Object[]} data
+ * @param {Object[]} selectedPatientId Patient to get data for
+ * @param {Object} resourceMap All resources mapped from all available patient data
  * @returns Course summary data formatted for the CourseSummaryTable visualizer
  */
 function getCourseSummaryData(selectedPatientId, resourceMap) {
@@ -63,10 +78,18 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
     selectedPatientId,
     resourceMap
   );
+  const plannedCourseData = getPlannedCourseData(
+    selectedPatientId,
+    resourceMap
+  );
+
+  console.log(plannedCourseData);
+
   const hasPatientData =
     !_.isEmpty(patientData) ||
     !_.isEmpty(treatmentPhaseData) ||
     !_.isEmpty(treatmentVolumesData) ||
+    !_.isEmpty(plannedCourseData) ||
     !_.isEmpty(courseSummaryData);
   return (
     <>
