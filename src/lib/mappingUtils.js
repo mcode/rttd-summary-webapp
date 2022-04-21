@@ -74,7 +74,7 @@ function mapCourseSummary(procedure) {
 function mapPhase(procedure) {
   let phases = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.code.coding.where(code = 'USCRS-33527')).resource"
+    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
   );
   let outputs = [];
   phases.forEach((phase) => {
