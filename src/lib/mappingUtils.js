@@ -6,7 +6,7 @@ const fhirpath = require("fhirpath");
  * @returns {Object} Returns an object with key/value pairs of data to display in the table
  */
 function mapPatient(patient) {
-  let output = {};
+  const output = {};
   output["ID"] = patient.identifier[0].value;
   output["First Name"] = patient.name[0].given.join(" ");
   output["Last Name"] = patient.name[0].family;
@@ -22,28 +22,29 @@ function mapPatient(patient) {
  * @returns {Object} Returns an object with key/value pairs of data to display in the table
  */
 function mapCourseSummary(procedure) {
-  let summary = fhirpath.evaluate(
+  console.log(procedure);
+  const summary = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.meta.profile.where($this = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary')).resource"
+    "Bundle.entry.where(resource.meta.profile contains 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
   )[0];
-  let output = {};
+  const output = {};
   output["Course Label"] = summary.identifier
     ? summary.identifier[0].value
     : "N/A";
   output["Treatment Status"] = summary.status;
-  let intent = fhirpath.evaluate(
+  const intent = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding"
   )[0];
   output["Treatment Intent"] = intent ? intent.display : undefined;
   output["Start Date"] = summary.performedPeriod.start;
   output["End Date"] = summary.performedPeriod.end;
-  let modality = fhirpath.evaluate(
+  const modality = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
   )[0];
   output["Modalities"] = modality ? modality.display : undefined;
-  let technique = fhirpath.evaluate(
+  const technique = fhirpath.evaluate(
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
   )[0];
@@ -72,24 +73,24 @@ function mapCourseSummary(procedure) {
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
 function mapPhase(procedure) {
-  let phases = fhirpath.evaluate(
+  const phases = fhirpath.evaluate(
     procedure,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
   );
-  let outputs = [];
+  const outputs = [];
   phases.forEach((phase) => {
-    let output = {};
+    const output = {};
     output["Phase Label"] = phase.identifier
       ? phase.identifier[0].value
       : "N/A";
     output["Start Date"] = phase.performedPeriod.start;
     output["End Date"] = phase.performedPeriod.end;
-    let modality = fhirpath.evaluate(
+    const modality = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
     )[0];
     output["Modalities"] = modality ? modality.display : undefined;
-    let technique = fhirpath.evaluate(
+    const technique = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
     )[0];
@@ -114,13 +115,13 @@ function mapPhase(procedure) {
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
 function mapPlannedCourses(serviceRequests) {
-  let plannedCourses = fhirpath.evaluate(
+  const plannedCourses = fhirpath.evaluate(
     serviceRequests,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
   );
-  let outputs = [];
+  const outputs = [];
   plannedCourses.forEach((plannedCourse) => {
-    let output = {};
+    const output = {};
     output["Course Label"] = plannedCourse.identifier
       ? plannedCourse.identifier[0].value
       : "N/A";
@@ -177,10 +178,10 @@ function mapPlannedCourses(serviceRequests) {
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
 function mapVolumes(volumes) {
-  let bodyStructures = fhirpath.evaluate(volumes, "Bundle.entry.resource");
-  let outputs = [];
+  const bodyStructures = fhirpath.evaluate(volumes, "Bundle.entry.resource");
+  const outputs = [];
   bodyStructures.forEach((volume) => {
-    let output = {};
+    const output = {};
     output["Volume Label"] = fhirpath.evaluate(
       volume,
       "BodyStructure.identifier.where(use = 'usual').value"
