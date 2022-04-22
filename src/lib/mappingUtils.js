@@ -22,7 +22,6 @@ function mapPatient(patient) {
  * @returns {Object} Returns an object with key/value pairs of data to display in the table
  */
 function mapCourseSummary(procedure) {
-  console.log(procedure);
   const summary = fhirpath.evaluate(
     procedure,
     "Bundle.entry.where(resource.meta.profile contains 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
