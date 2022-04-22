@@ -74,7 +74,7 @@ function mapCourseSummary(procedure) {
 function mapPhase(procedure) {
   let phases = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.meta.profile.first() = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-treatment-phase').resource"
+    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
   );
   let outputs = [];
   phases.forEach((phase) => {
