@@ -60,9 +60,10 @@ function mapCourseSummary(procedure) {
     summary,
     "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
   );
-  output["Body Sites"] = fhirpath
-    .evaluate(summary, "Procedure.bodySite.coding")
-    .map((coding) => coding.display);
+  output["Body Sites"] = fhirpath.evaluate(
+    summary,
+    "Procedure.bodySite.coding.display"
+  );
   return output;
 }
 
@@ -120,7 +121,6 @@ function mapPlannedCourses(serviceRequests) {
   );
   const outputs = [];
   plannedCourses.forEach((plannedCourse) => {
-    console.log(plannedCourse);
     const output = {};
     output["Course Label"] = plannedCourse.identifier
       ? plannedCourse.identifier[0].value
