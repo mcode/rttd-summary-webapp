@@ -24,9 +24,12 @@ function PlannedCourseTable({ data = {}, className }) {
     delete plannedCourseData["Total Planned Dose to Course [cGy]"];
     delete plannedCourseData["Body Sites"];
     return (
-      <div className={className}>
+      <div key={i} className={className}>
         {/* Display the base course data with a simple table */}
-        <SimpleDataTable data={plannedCourseData} title="Planned Course" />
+        <SimpleDataTable
+          data={plannedCourseData}
+          title={`Planned Course ${i + 1}`}
+        />
         {/* Display the volume data with the multi-entry table */}
         <MultiEntryDataTable
           dataArray={volumesData}

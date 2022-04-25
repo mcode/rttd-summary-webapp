@@ -120,33 +120,29 @@ function mapPlannedCourses(serviceRequests) {
   );
   const outputs = [];
   plannedCourses.forEach((plannedCourse) => {
+    console.log(plannedCourse);
     const output = {};
     output["Course Label"] = plannedCourse.identifier
       ? plannedCourse.identifier[0].value
       : "N/A";
     output["Course Status"] = plannedCourse.status;
     output["Request Intent"] = plannedCourse.intent;
-    output["Procedure Intent"] = fhirpath
-      .evaluate(
-        plannedCourse,
-        "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding"
-      )
-      .map((intent) => intent.display)[0];
-
-    output["Modalities"] = fhirpath
-      .evaluate(
-        plannedCourse,
-        "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
-      )
-      .map((modality) => modality.display)[0];
-    output["Techniques"] = fhirpath
-      .evaluate(
-        plannedCourse,
-        "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
-      )
-      .map((technique) => technique.display)
-      .join("; ");
-    // Should only ever be one value for # sessions
+    // IG states there will be at most one procedure intent
+    output["Procedure Intent"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display"
+    )[0];
+    // One display value should suffice
+    output["Modalities"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
+    )[0];
+    // One display value should suffice
+    output["Techniques"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
+    )[0];
+    // IG states there will be at most one value for # sessions
     output["Number of Sessions"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt.single()"
@@ -159,9 +155,10 @@ function mapPlannedCourses(serviceRequests) {
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath
-      .evaluate(plannedCourse, "ServiceRequest.bodySite.coding")
-      .map((coding) => coding.display);
+    output["Body Sites"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.bodySite.coding.display"
+    );
     //NOT included yet
     // output["Energy or Isotope"]
     // output["Treatment Device"]
