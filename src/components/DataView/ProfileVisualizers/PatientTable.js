@@ -1,4 +1,4 @@
-import SimpleDataTable from "./SimpleDataTable";
+import SimpleDataTable from "../SimpleDataTable";
 
 function PatientTable({ data = {}, className }) {
   return (

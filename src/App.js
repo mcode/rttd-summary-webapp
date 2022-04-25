@@ -11,7 +11,8 @@ import {
 import {
   mapPatient,
   mapCourseSummary,
-  mapPhase,
+  mapTreatedPhase,
+  mapPlannedTreatmentPhases,
   mapVolumes,
   mapPlannedCourses,
 } from "./lib/mappingUtils";
@@ -110,10 +111,11 @@ function App() {
       const serviceRequests = await fetchServiceRequests(serverUrl, patient.id);
       resourceMap.set(patient.id, [
         mapPatient(patient),
-        mapPhase(procedures),
+        mapTreatedPhase(procedures),
         mapCourseSummary(procedures),
         mapVolumes(volumes),
         mapPlannedCourses(serviceRequests),
+        mapPlannedTreatmentPhases(serviceRequests),
       ]);
     }
     setSearchedPatientIds(patientResources.map((patient) => patient.id));

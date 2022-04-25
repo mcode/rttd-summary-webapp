@@ -1,5 +1,5 @@
-import SimpleDataTable from "./SimpleDataTable";
-import MultiEntryDataTable from "./MultiEntryDataTable";
+import SimpleDataTable from "../SimpleDataTable";
+import MultiEntryDataTable from "../MultiEntryDataTable";
 
 function PlannedCourseTable({ data = {}, className }) {
   if (!data) {
