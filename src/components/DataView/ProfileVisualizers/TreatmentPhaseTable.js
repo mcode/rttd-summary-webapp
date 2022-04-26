@@ -7,7 +7,6 @@ function TreatmentPhaseTable({ data = {}, className }) {
     return null;
   }
   return data.map((treatmentPhase, i) => {
-    console.log(treatmentPhase);
     const title = `Phase ${i + 1}`;
     // Compact so we don't make space for empty entries
     const numVolumes = _.compact(
