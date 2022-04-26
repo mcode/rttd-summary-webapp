@@ -10,21 +10,20 @@ function PlannedTreatmentPhaseTable({ data = {}, className }) {
     const title = `Planned Phase ${i + 1}`;
     // Compact so we don't make space for empty entries
     const numVolumes = _.compact(
-      plannedPhase["Total Planned Dose from [cGy]"]
+      plannedPhase["Total Planned Dose [cGy]"]
     ).length;
     const volumesData = [];
     for (let i = 0; i < numVolumes; i++) {
       volumesData.push({
-        "Total Planned Dose from [cGy]":
-          plannedPhase["Total Planned Dose from [cGy]"][i],
         "Planned Dose per Fraction [cGy]":
           plannedPhase["Planned Dose per Fraction [cGy]"][i],
+        "Total Planned Dose [cGy]": plannedPhase["Total Planned Dose [cGy]"][i],
         "Body Sites": plannedPhase["Body Sites"][i],
       });
     }
     const plannedPhaseData = { ...plannedPhase };
-    delete plannedPhaseData["Total Planned Dose from [cGy]"];
     delete plannedPhaseData["Planned Dose per Fraction [cGy]"];
+    delete plannedPhaseData["Total Planned Dose [cGy]"];
     delete plannedPhaseData["Body Sites"];
     return (
       <div className={className} key={i}>
