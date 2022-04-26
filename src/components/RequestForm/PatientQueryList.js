@@ -48,7 +48,7 @@ function PatientQueryList({
   }
 
   return (
-    <ul className="max-h-72 overflow-y-auto">
+    <ul className="max-h-96 overflow-y-auto">
       {patientQueries.map((patientQuery, i) => {
         return (
           <li

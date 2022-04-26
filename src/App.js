@@ -4,6 +4,7 @@ import { Plus } from "react-feather";
 import {
   fetchPatients,
   fetchProcedures,
+  fetchServiceRequests,
   fetchVolumes,
   generateQueryUrl,
 } from "./lib/fetchingUtils";
@@ -12,6 +13,7 @@ import {
   mapCourseSummary,
   mapPhase,
   mapVolumes,
+  mapPlannedCourses,
 } from "./lib/mappingUtils";
 import FhirServerUrlInput from "./components/RequestForm/FhirServerUrlInput";
 import PatientQueryList from "./components/RequestForm/PatientQueryList";
@@ -39,7 +41,42 @@ function App() {
       gender: "",
     },
     {
-      id: "Patient-XRTS-03",
+      id: "Patient-XRTS-02",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-01-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-02-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-03-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-04-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-05-22A",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -70,11 +107,13 @@ function App() {
     for (const patient of patientResources) {
       const procedures = await fetchProcedures(serverUrl, patient.id);
       const volumes = await fetchVolumes(serverUrl, patient.id);
+      const serviceRequests = await fetchServiceRequests(serverUrl, patient.id);
       resourceMap.set(patient.id, [
         mapPatient(patient),
         mapPhase(procedures),
         mapCourseSummary(procedures),
         mapVolumes(volumes),
+        mapPlannedCourses(serviceRequests),
       ]);
     }
     setSearchedPatientIds(patientResources.map((patient) => patient.id));

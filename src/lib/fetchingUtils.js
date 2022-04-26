@@ -73,7 +73,7 @@ function generateQueryUrl(serverUrl, queryObj) {
  * @returns {Object[]} Returns an array of FHIR Procedure resources for that Patient
  */
 async function fetchProcedures(serverUrl, patientId) {
-  let procedureResources = await axios
+  const procedureResources = await axios
     .get(`${serverUrl}/Procedure?subject:Patient=${patientId}`)
     .then((res) => res.data)
     .catch((e) => {
@@ -89,9 +89,7 @@ async function fetchProcedures(serverUrl, patientId) {
  * @returns {Object[]} Returns an array of FHIR BodyStructure resources for that Patient
  */
 async function fetchVolumes(serverUrl, patientId) {
-  // TODO: Determine why this is a body structure and
-  //       if we need to filter out non-volume BodyStructure resources
-  let volumeResources = await axios
+  const volumeResources = await axios
     .get(`${serverUrl}/BodyStructure?patient:Patient=${patientId}`)
     .then((res) => res.data)
     .catch((e) => {
@@ -101,4 +99,26 @@ async function fetchVolumes(serverUrl, patientId) {
   return volumeResources;
 }
 
-export { fetchPatients, fetchProcedures, fetchVolumes, generateQueryUrl };
+/**
+ * Takes a patient ID and fetches ServiceRequest resources that patient
+ * @param {String} patientId - A patient ID to fetch ServiceRequest resources for
+ * @returns {Object[]} Returns an array of FHIR ServiceRequest resources for that Patient
+ */
+async function fetchServiceRequests(serverUrl, patientId) {
+  const serviceRequests = await axios
+    .get(`${serverUrl}/ServiceRequest?subject:Patient=${patientId}`)
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error(e);
+    });
+
+  return serviceRequests;
+}
+
+export {
+  fetchPatients,
+  fetchProcedures,
+  fetchVolumes,
+  fetchServiceRequests,
+  generateQueryUrl,
+};
