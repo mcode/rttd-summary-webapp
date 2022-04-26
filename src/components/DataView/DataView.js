@@ -106,7 +106,6 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
     !_.isEmpty(treatmentPhaseData) ||
     !_.isEmpty(treatmentVolumesData) ||
     !_.isEmpty(plannedCourseData) ||
-    !_.isEmpty(plannedCourseData) ||
     !_.isEmpty(courseSummaryData);
   return (
     <>
