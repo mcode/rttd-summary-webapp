@@ -42,10 +42,10 @@ function getTreatmentPhaseData(selectedPatientId, resourceMap) {
 }
 
 /**
- * Parse and reformat phase data for visualization
+ * Parse and reformatPlanned  phase data for visualization
  * @param {Object[]} selectedPatientId Patient to get data for
  * @param {Object} resourceMap All resources mapped from all available patient data
- * @returns Phase data formatted for the TreatmentPhaseTable visualizer
+ * @returns Phase data formatted for the PlannedTreatmentPhaseTable visualizer
  */
 function getPlannedTreatmentPhaseData(selectedPatientId, resourceMap) {
   const patientData = resourceMap.get(selectedPatientId);
