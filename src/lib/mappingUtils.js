@@ -79,7 +79,6 @@ function mapTreatedPhase(procedure) {
   );
   const outputs = [];
   phases.forEach((phase) => {
-    console.log(phase);
     const output = {};
     output["Phase Label"] = phase.identifier
       ? phase.identifier[0].value
@@ -114,6 +113,7 @@ function mapTreatedPhase(procedure) {
 
 /**
  * Takes a bundle of serviceRequests and returns an array of mappings of Phase data to be displayed in the table
+ * Based on https://build.fhir.org/ig/HL7/codex-radiation-therapy/StructureDefinition-codexrt-radiotherapy-planned-phase.html
  * @param {Object} procedure - A bundle of serviceRequests
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
@@ -122,36 +122,40 @@ function mapPlannedTreatmentPhases(serviceRequests) {
     serviceRequests,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
   );
-  console.log(plannedPhases);
   const outputs = [];
   plannedPhases.forEach((plannedPhase) => {
     const output = {};
     output["Planned Phase Label"] = plannedPhase.identifier
       ? plannedPhase.identifier[0].value
       : "N/A";
-    // output["Start Date"] = plannedPhase.performedPeriod.start;
-    // output["End Date"] = plannedPhase.performedPeriod.end;
-    const modality = fhirpath.evaluate(
+    output["Phase Status"] = plannedPhase.status;
+    output["Request Intent"] = plannedPhase.intent;
+    // IG states there will be at most one procedure intent
+    output["Modalities"] = fhirpath.evaluate(
       plannedPhase,
-      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
     )[0];
-    output["Modalities"] = modality ? modality.display : undefined;
     const technique = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
     )[0];
     output["Techniques"] = technique ? technique.display : undefined;
-    output["Planned Number of Fractions Delivered"] = fhirpath.evaluate(
+    output["Planned Number of Fractions"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-planned').valuePositiveInt"
     )[0];
-    output["Total Planned Dose from Planned Phase [cGy]"] = fhirpath.evaluate(
+    output["Total Planned Dose from [cGy]"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath
-      .evaluate(plannedPhase, "ServiceRequest.bodySite.coding")
-      .map((coding) => coding.display);
+    output["Planned Dose per Fraction [cGy]"] = fhirpath.evaluate(
+      plannedPhase,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'fractionDose').valueQuantity.value"
+    );
+    output["Body Sites"] = fhirpath.evaluate(
+      plannedPhase,
+      "ServiceRequest.bodySite.coding.display"
+    );
     outputs.push(output);
   });
   return outputs;

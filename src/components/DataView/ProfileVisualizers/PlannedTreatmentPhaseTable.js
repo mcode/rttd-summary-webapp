@@ -10,19 +10,24 @@ function PlannedTreatmentPhaseTable({ data = {}, className }) {
     const title = `Planned Phase ${i + 1}`;
     // Compact so we don't make space for empty entries
     const numVolumes = _.compact(
-      plannedPhase["Total Dose Delivered from Phase [cGy]"]
+      plannedPhase["Total Planned Dose from [cGy]"]
     ).length;
     const volumesData = [];
     for (let i = 0; i < numVolumes; i++) {
       volumesData.push({
-        "Total Dose Delivered from Phase [cGy]":
-          plannedPhase["Total Dose Delivered from Phase [cGy]"][i],
+        "Total Planned Dose from [cGy]":
+          plannedPhase["Total Planned Dose from [cGy]"][i],
+        "Planned Dose per Fraction [cGy]":
+          plannedPhase["Planned Dose per Fraction [cGy]"][i],
+        "Body Sites": plannedPhase["Body Sites"][i],
       });
     }
     const plannedPhaseData = { ...plannedPhase };
-    delete plannedPhaseData["Total Dose Delivered from Phase [cGy]"];
+    delete plannedPhaseData["Total Planned Dose from [cGy]"];
+    delete plannedPhaseData["Planned Dose per Fraction [cGy]"];
+    delete plannedPhaseData["Body Sites"];
     return (
-      <div className={className}>
+      <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}
         <SimpleDataTable data={plannedPhaseData} title={title} />
         {/* Display the volume data with the multi-entry table */}
