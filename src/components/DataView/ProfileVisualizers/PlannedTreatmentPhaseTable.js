@@ -33,7 +33,7 @@ function PlannedTreatmentPhaseTable({ data = {}, className }) {
         {/* Display the volume data with the multi-entry table */}
         <MultiEntryDataTable
           dataArray={volumesData}
-          title="Dose Delivered to Volumes"
+          title="Planned Dose to Volumes"
           columnTitle="Dose to Volume"
         />
       </div>
