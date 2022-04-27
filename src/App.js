@@ -35,20 +35,6 @@ function App() {
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
   const [patientQueries, setPatientQueries] = useState([
     {
-      id: "Patient-XRTS-01",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-02",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
       id: "Patient-XRTS-01-22A",
       givenName: "",
       familyName: "",
@@ -78,6 +64,20 @@ function App() {
     },
     {
       id: "Patient-XRTS-05-22A",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-01",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-02",
       givenName: "",
       familyName: "",
       birthDate: "",
