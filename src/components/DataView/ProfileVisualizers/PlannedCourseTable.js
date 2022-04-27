@@ -1,11 +1,9 @@
 import SimpleDataTable from "../SimpleDataTable";
 import MultiEntryDataTable from "../MultiEntryDataTable";
 
-function PlannedCourseTable({ data = {}, className }) {
-  if (!data) {
-    return null;
-  }
+function PlannedCourseTable({ data = [], className }) {
   return data.map((plannedCourse, i) => {
+    const title = `Planned Course ${i + 1}`;
     const numVolumes =
       plannedCourse["Number of Planned Fractions"] &&
       plannedCourse["Number of Planned Fractions"].length;
@@ -26,10 +24,7 @@ function PlannedCourseTable({ data = {}, className }) {
     return (
       <div key={i} className={className}>
         {/* Display the base course data with a simple table */}
-        <SimpleDataTable
-          data={plannedCourseData}
-          title={`Planned Course ${i + 1}`}
-        />
+        <SimpleDataTable data={plannedCourseData} title={title} />
         {/* Display the volume data with the multi-entry table */}
         <MultiEntryDataTable
           dataArray={volumesData}

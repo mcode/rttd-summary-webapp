@@ -2,10 +2,7 @@ import _ from "lodash";
 import SimpleDataTable from "../SimpleDataTable";
 import MultiEntryDataTable from "../MultiEntryDataTable";
 
-function PlannedTreatmentPhaseTable({ data = {}, className }) {
-  if (!data) {
-    return null;
-  }
+function PlannedTreatmentPhaseTable({ data = [], className }) {
   return data.map((plannedPhase, i) => {
     const title = `Planned Phase ${i + 1}`;
     // Compact so we don't make space for empty entries

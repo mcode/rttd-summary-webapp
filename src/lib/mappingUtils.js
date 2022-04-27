@@ -22,46 +22,53 @@ function mapPatient(patient) {
  * @returns {Object} Returns an object with key/value pairs of data to display in the table
  */
 function mapCourseSummary(procedure) {
-  const summary = fhirpath.evaluate(
+  const summaries = fhirpath.evaluate(
     procedure,
     "Bundle.entry.where(resource.meta.profile contains 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
-  )[0];
-  const output = {};
-  output["Course Label"] = summary.identifier
-    ? summary.identifier[0].value
-    : "N/A";
-  output["Treatment Status"] = summary.status;
-  output["Treatment Intent"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding.display"
-  )[0];
-  output["Start Date"] = summary.performedPeriod.start;
-  output["End Date"] = summary.performedPeriod.end;
-  output["Modalities"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
-  )[0];
-  output["Techniques"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
-  )[0];
-  output["Number of Sessions"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
-  )[0];
-  output["Number of Delivered Fractions"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'fractionsDelivered').valueUnsignedInt"
   );
-  output["Total Delivered Dose [cGy]"] = fhirpath.evaluate(
-    summary,
-    "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
-  );
-  output["Body Sites"] = fhirpath.evaluate(
-    summary,
-    "Procedure.bodySite.coding.display"
-  );
-  return output;
+  const outputs = [];
+  summaries.forEach((summary) => {
+    const output = {};
+    output["Course Label"] = summary.identifier
+      ? summary.identifier[0].value
+      : "N/A";
+    output["Treatment Status"] = summary.status;
+    const intent = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding"
+    )[0];
+    output["Treatment Intent"] = intent ? intent.display : undefined;
+    output["Start Date"] = summary.performedPeriod.start;
+    output["End Date"] = summary.performedPeriod.end;
+    const modality = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
+    )[0];
+    output["Modalities"] = modality ? modality.display : undefined;
+    const technique = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
+    )[0];
+    output["Techniques"] = technique ? technique.display : undefined;
+    output["Number of Sessions"] = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
+    )[0];
+    output["Number of Delivered Fractions"] = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'fractionsDelivered').valueUnsignedInt"
+    );
+    output["Total Delivered Dose [cGy]"] = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
+    );
+    output["Body Sites"] = fhirpath.evaluate(
+      summary,
+      "Procedure.bodySite.coding.display"
+    );
+    outputs.push(output);
+  });
+  return outputs;
 }
 
 /**
