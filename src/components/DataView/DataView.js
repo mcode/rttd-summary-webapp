@@ -1,8 +1,9 @@
-import PatientTable from "./PatientTable";
-import TreatmentVolumeTable from "./TreatmentVolumeTable";
-import TreatmentPhaseTable from "./TreatmentPhaseTable";
-import CourseSummaryTable from "./CourseSummaryTable";
-import PlannedCourseTable from "./PlannedCourseTable";
+import PatientTable from "./ProfileVisualizers/PatientTable";
+import TreatmentVolumeTable from "./ProfileVisualizers/TreatmentVolumeTable";
+import PlannedTreatmentPhaseTable from "./ProfileVisualizers/PlannedTreatmentPhaseTable";
+import TreatmentPhaseTable from "./ProfileVisualizers/TreatmentPhaseTable";
+import CourseSummaryTable from "./ProfileVisualizers/CourseSummaryTable";
+import PlannedCourseTable from "./ProfileVisualizers/PlannedCourseTable";
 import PatientSelect from "./PatientSelect";
 import { useState } from "react";
 import _ from "lodash";
@@ -41,6 +42,17 @@ function getTreatmentPhaseData(selectedPatientId, resourceMap) {
 }
 
 /**
+ * Parse and reformatPlanned  phase data for visualization
+ * @param {Object[]} selectedPatientId Patient to get data for
+ * @param {Object} resourceMap All resources mapped from all available patient data
+ * @returns Phase data formatted for the PlannedTreatmentPhaseTable visualizer
+ */
+function getPlannedTreatmentPhaseData(selectedPatientId, resourceMap) {
+  const patientData = resourceMap.get(selectedPatientId);
+  return patientData && patientData[5];
+}
+
+/**
  * Parse and reformat planned course for visualization
  * @param {Object[]} selectedPatientId Patient to get data for
  * @param {Object} resourceMap All resources mapped from all available patient data
@@ -67,6 +79,10 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
     patientIds.length !== 0 && patientIds[0]
   );
   const patientData = getPatientData(selectedPatientId, resourceMap);
+  const plannedTreatmentPhaseData = getPlannedTreatmentPhaseData(
+    selectedPatientId,
+    resourceMap
+  );
   const treatmentPhaseData = getTreatmentPhaseData(
     selectedPatientId,
     resourceMap
@@ -86,6 +102,7 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
 
   const hasPatientData =
     !_.isEmpty(patientData) ||
+    !_.isEmpty(plannedTreatmentPhaseData) ||
     !_.isEmpty(treatmentPhaseData) ||
     !_.isEmpty(treatmentVolumesData) ||
     !_.isEmpty(plannedCourseData) ||
@@ -101,17 +118,12 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
       {hasPatientData && (
         <>
           <PatientTable className="my-4" data={patientData} />
-          {/* NOTE: Not visualizing diagnosis tables now b/c of Michelle feedback*/}
-          {/* <DiagnosisTable className="my-4" data={diagnosisData} /> */}
           <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
-          {treatmentPhaseData &&
-            treatmentPhaseData.map((phase, i) => (
-              <TreatmentPhaseTable
-                key={phase["Start Date"]}
-                data={phase}
-                title={`Phase ${i + 1}`}
-              />
-            ))}
+          <TreatmentPhaseTable className="my-4" data={treatmentPhaseData} />
+          <PlannedTreatmentPhaseTable
+            className="my-4"
+            data={plannedTreatmentPhaseData}
+          />
           <PlannedCourseTable className="my-4" data={plannedCourseData} />
           <CourseSummaryTable className="my-4" data={courseSummaryData} />
         </>

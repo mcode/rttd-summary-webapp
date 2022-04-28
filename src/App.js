@@ -11,7 +11,8 @@ import {
 import {
   mapPatient,
   mapCourseSummary,
-  mapPhase,
+  mapTreatedPhase,
+  mapPlannedTreatmentPhases,
   mapVolumes,
   mapPlannedCourses,
 } from "./lib/mappingUtils";
@@ -33,20 +34,6 @@ function App() {
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
   const [patientQueries, setPatientQueries] = useState([
-    {
-      id: "Patient-XRTS-01",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-02",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
     {
       id: "Patient-XRTS-01-22A",
       givenName: "",
@@ -82,6 +69,20 @@ function App() {
       birthDate: "",
       gender: "",
     },
+    {
+      id: "Patient-XRTS-01",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
+    {
+      id: "Patient-XRTS-02",
+      givenName: "",
+      familyName: "",
+      birthDate: "",
+      gender: "",
+    },
   ]);
 
   function openRequestForm(queryIndex) {
@@ -110,10 +111,11 @@ function App() {
       const serviceRequests = await fetchServiceRequests(serverUrl, patient.id);
       resourceMap.set(patient.id, [
         mapPatient(patient),
-        mapPhase(procedures),
+        mapTreatedPhase(procedures),
         mapCourseSummary(procedures),
         mapVolumes(volumes),
         mapPlannedCourses(serviceRequests),
+        mapPlannedTreatmentPhases(serviceRequests),
       ]);
     }
     setSearchedPatientIds(patientResources.map((patient) => patient.id));

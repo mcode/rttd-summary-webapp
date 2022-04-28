@@ -1,4 +1,4 @@
-import MultiEntryDataTable from "./MultiEntryDataTable";
+import MultiEntryDataTable from "../MultiEntryDataTable";
 
 function TreatmentVolumeTable({ data = [], className }) {
   return (

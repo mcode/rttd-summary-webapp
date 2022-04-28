@@ -1,5 +1,5 @@
-import SimpleDataTable from "./SimpleDataTable";
-import MultiEntryDataTable from "./MultiEntryDataTable";
+import SimpleDataTable from "../SimpleDataTable";
+import MultiEntryDataTable from "../MultiEntryDataTable";
 
 function CourseSummaryTable({ data = {}, className }) {
   const numVolumes =
@@ -9,14 +9,13 @@ function CourseSummaryTable({ data = {}, className }) {
   for (let i = 0; i < numVolumes; i++) {
     volumesData.push({
       "Number of Delivered Fractions": data["Number of Delivered Fractions"][i],
-      "Total Delivered Dose to Course [cGy]":
-        data["Total Delivered Dose to Course [cGy]"][i],
+      "Total Delivered Dose [cGy]": data["Total Delivered Dose [cGy]"][i],
       "Body Sites": data["Body Sites"][i],
     });
   }
   const courseData = { ...data };
   delete courseData["Number of Delivered Fractions"];
-  delete courseData["Total Delivered Dose to Course [cGy]"];
+  delete courseData["Total Delivered Dose [cGy]"];
   delete courseData["Body Sites"];
   return (
     <div className={className}>
