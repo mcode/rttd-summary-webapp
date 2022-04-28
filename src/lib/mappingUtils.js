@@ -33,23 +33,20 @@ function mapCourseSummary(procedure) {
       ? summary.identifier[0].value
       : "N/A";
     output["Treatment Status"] = summary.status;
-    const intent = fhirpath.evaluate(
+    output["Treatment Intent"] = fhirpath.evaluate(
       summary,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding"
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding.display"
     )[0];
-    output["Treatment Intent"] = intent ? intent.display : undefined;
     output["Start Date"] = summary.performedPeriod.start;
     output["End Date"] = summary.performedPeriod.end;
-    const modality = fhirpath.evaluate(
+    output["Modalities"] = fhirpath.evaluate(
       summary,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding"
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
     )[0];
-    output["Modalities"] = modality ? modality.display : undefined;
-    const technique = fhirpath.evaluate(
+    output["Techniques"] = fhirpath.evaluate(
       summary,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding"
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
     )[0];
-    output["Techniques"] = technique ? technique.display : undefined;
     output["Number of Sessions"] = fhirpath.evaluate(
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
