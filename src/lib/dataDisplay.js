@@ -24,7 +24,7 @@ function isEmpty(data) {
   return _.isUndefined(data) || _.isNull(data);
 }
 
-function dataDisplay(data, type) {
+function dataDisplay(data) {
   if (isEmpty(data)) {
     // Always check for empty data
     return <EmptyComponent />;
