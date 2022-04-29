@@ -10,8 +10,14 @@ function dateFormat(data) {
   });
 }
 
+function booleanFormat(data) {
+  return data ? "True" : "False";
+}
+
 function isDate(data) {
-  return DateTime.fromISO(data).isValid;
+  // Dates and Datetimes are JSON strings according to FHIR Datatype spec
+  // https://www.hl7.org/fhir/datatypes.html#date
+  return typeof data === "string" && DateTime.fromISO(data).isValid;
 }
 
 function isEmpty(data) {
@@ -20,9 +26,10 @@ function isEmpty(data) {
 
 function dataDisplay(data) {
   if (isEmpty(data)) {
+    // Always check for empty data
     return <EmptyComponent />;
   } else if (isBoolean(data)) {
-    return data ? "True" : "False";
+    return booleanFormat(data);
   } else if (isDate(data)) {
     return dateFormat(data);
   } else {
