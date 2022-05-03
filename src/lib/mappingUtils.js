@@ -1,10 +1,10 @@
 const fhirpath = require("fhirpath");
 
 // Some common getters with complex FHIRpaths
-function getProcedureIntent(resource, resourceType) {
+function getProcedureIntent(resource) {
   return fhirpath.evaluate(
     resource,
-    `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display`
+    `Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display`
   )[0];
 }
 function getModalities(resource, resourceType) {
