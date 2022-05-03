@@ -1,5 +1,32 @@
 const fhirpath = require("fhirpath");
 
+// Some common getters with complex FHIRpaths
+function getProcedureIntent(resource, resourceType) {
+  return fhirpath.evaluate(
+    resource,
+    `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display`
+  )[0];
+}
+function getModalities(resource, resourceType) {
+  return fhirpath
+    .evaluate(
+      resource,
+      `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display`
+    )
+    .join(", ");
+}
+function getTechniques(resource, resourceType) {
+  return fhirpath
+    .evaluate(
+      resource,
+      `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display`
+    )
+    .join(", ");
+}
+function getBodySites(resource, resourceType) {
+  return fhirpath.evaluate(resource, `${resourceType}.bodySite.coding.display`);
+}
+
 /**
  * Takes a patient resource returned by makeRequests and returns a mapping of Patient data to be displayed in the table
  * @param {Object} patient - A patient resource
@@ -33,20 +60,11 @@ function mapCourseSummary(procedure) {
       ? summary.identifier[0].value
       : "N/A";
     output["Treatment Status"] = summary.status;
-    output["Treatment Intent"] = fhirpath.evaluate(
-      summary,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.coding.display"
-    )[0];
+    output["Treatment Intent"] = getProcedureIntent(summary);
     output["Start Date"] = summary.performedPeriod.start;
     output["End Date"] = summary.performedPeriod.end;
-    output["Modalities"] = fhirpath.evaluate(
-      summary,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
-    )[0];
-    output["Techniques"] = fhirpath.evaluate(
-      summary,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
-    )[0];
+    output["Modalities"] = getModalities(summary, "Procedure");
+    output["Techniques"] = getTechniques(summary, "Procedure");
     output["Number of Sessions"] = fhirpath.evaluate(
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
@@ -59,10 +77,7 @@ function mapCourseSummary(procedure) {
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
-      summary,
-      "Procedure.bodySite.coding.display"
-    );
+    output["Body Sites"] = getBodySites(summary, "Procedure");
     outputs.push(output);
   });
   return outputs;
@@ -86,14 +101,8 @@ function mapTreatedPhase(procedure) {
       : "N/A";
     output["Start Date"] = phase.performedPeriod.start;
     output["End Date"] = phase.performedPeriod.end;
-    output["Modalities"] = fhirpath.evaluate(
-      phase,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
-    )[0];
-    output["Techniques"] = fhirpath.evaluate(
-      phase,
-      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
-    )[0];
+    output["Modalities"] = getModalities(phase, "Procedure");
+    output["Techniques"] = getTechniques(phase, "Procedure");
     output["Number of Fractions Delivered"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-delivered').valueUnsignedInt"
@@ -102,10 +111,7 @@ function mapTreatedPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
-      phase,
-      "Procedure.bodySite.coding.display"
-    );
+    output["Body Sites"] = getBodySites(phase, "Procedure");
     outputs.push(output);
   });
   return outputs;
@@ -131,14 +137,8 @@ function mapPlannedTreatmentPhases(serviceRequests) {
     output["Phase Status"] = plannedPhase.status;
     output["Request Intent"] = plannedPhase.intent;
     // IG states there will be at most one procedure intent
-    output["Modalities"] = fhirpath.evaluate(
-      plannedPhase,
-      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
-    )[0];
-    output["Techniques"] = fhirpath.evaluate(
-      plannedPhase,
-      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
-    )[0];
+    output["Modalities"] = getModalities(plannedPhase, "ServiceRequest");
+    output["Techniques"] = getTechniques(plannedPhase, "ServiceRequest");
     output["Planned Number of Fractions"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-planned').valuePositiveInt"
@@ -151,10 +151,7 @@ function mapPlannedTreatmentPhases(serviceRequests) {
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
-      plannedPhase,
-      "ServiceRequest.bodySite.coding.display"
-    );
+    output["Body Sites"] = getBodySites(plannedPhase, "ServiceRequest");
     outputs.push(output);
   });
   return outputs;
@@ -180,20 +177,11 @@ function mapPlannedCourses(serviceRequests) {
     output["Course Status"] = plannedCourse.status;
     output["Request Intent"] = plannedCourse.intent;
     // IG states there will be at most one procedure intent
-    output["Procedure Intent"] = fhirpath.evaluate(
-      plannedCourse,
-      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display"
-    )[0];
+    output["Procedure Intent"] = getProcedureIntent(plannedCourse);
     // One display value should suffice
-    output["Modalities"] = fhirpath.evaluate(
-      plannedCourse,
-      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display"
-    )[0];
+    output["Modalities"] = getModalities(plannedCourse, "ServiceRequest");
     // One display value should suffice
-    output["Techniques"] = fhirpath.evaluate(
-      plannedCourse,
-      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display"
-    )[0];
+    output["Techniques"] = getTechniques(plannedCourse, "ServiceRequest");
     // IG states there will be at most one value for # sessions
     output["Number of Sessions"] = fhirpath.evaluate(
       plannedCourse,
@@ -207,10 +195,7 @@ function mapPlannedCourses(serviceRequests) {
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
-      plannedCourse,
-      "ServiceRequest.bodySite.coding.display"
-    );
+    output["Body Sites"] = getBodySites(plannedCourse, "ServiceRequest");
     //NOT included yet
     // output["Energy or Isotope"]
     // output["Treatment Device"]
