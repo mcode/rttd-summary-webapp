@@ -1,10 +1,10 @@
 const fhirpath = require("fhirpath");
 
 // Some common getters with complex FHIRpaths
-function getProcedureIntent(resource) {
+function getProcedureIntent(resource, resourceType) {
   return fhirpath.evaluate(
     resource,
-    `Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display`
+    `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-procedure-intent').valueCodeableConcept.single().coding.display`
   )[0];
 }
 function getModalities(resource, resourceType) {
@@ -60,7 +60,7 @@ function mapCourseSummary(procedure) {
       ? summary.identifier[0].value
       : "N/A";
     output["Treatment Status"] = summary.status;
-    output["Treatment Intent"] = getProcedureIntent(summary);
+    output["Treatment Intent"] = getProcedureIntent(summary, "Procedure");
     output["Start Date"] = summary.performedPeriod.start;
     output["End Date"] = summary.performedPeriod.end;
     output["Modalities"] = getModalities(summary, "Procedure");
@@ -177,7 +177,10 @@ function mapPlannedCourses(serviceRequests) {
     output["Course Status"] = plannedCourse.status;
     output["Request Intent"] = plannedCourse.intent;
     // IG states there will be at most one procedure intent
-    output["Procedure Intent"] = getProcedureIntent(plannedCourse);
+    output["Procedure Intent"] = getProcedureIntent(
+      plannedCourse,
+      "ServiceRequest"
+    );
     // One display value should suffice
     output["Modalities"] = getModalities(plannedCourse, "ServiceRequest");
     // One display value should suffice
