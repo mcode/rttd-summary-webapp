@@ -13,7 +13,7 @@ function getModalities(resource, resourceType) {
       resource,
       `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display`
     )
-    .join(", ");
+    .join("\n");
 }
 function getTechniques(resource, resourceType) {
   return fhirpath
@@ -21,7 +21,7 @@ function getTechniques(resource, resourceType) {
       resource,
       `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display`
     )
-    .join(", ");
+    .join("\n");
 }
 function getBodySites(resource, resourceType) {
   return fhirpath.evaluate(resource, `${resourceType}.bodySite.coding.display`);
