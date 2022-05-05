@@ -1,8 +1,12 @@
 import _ from "lodash";
 import SimpleDataTable from "../SimpleDataTable";
 import MultiEntryDataTable from "../MultiEntryDataTable";
+import EmptyDataTable from "../EmptyDataTable";
 
 function TreatmentPhaseTable({ data = [], className }) {
+  if (_.isEmpty(data)) {
+    return <EmptyDataTable title="Phase" className={className} />;
+  }
   return data.map((treatmentPhase, i) => {
     const title = `Phase ${i + 1}`;
     // Compact so we don't make space for empty entries

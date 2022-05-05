@@ -5,7 +5,6 @@ import TreatmentPhaseTable from "./ProfileVisualizers/TreatmentPhaseTable";
 import CourseSummaryTable from "./ProfileVisualizers/CourseSummaryTable";
 import PlannedCourseTable from "./ProfileVisualizers/PlannedCourseTable";
 import PatientSelect from "./PatientSelect";
-import SimpleDataTable from "./SimpleDataTable";
 import { useState } from "react";
 import _ from "lodash";
 
@@ -118,66 +117,15 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
       {!hasPatientData && <p>No Patient Data found for {selectedPatientId}</p>}
       {hasPatientData && (
         <>
-          {!_.isEmpty(patientData) ? (
-            <PatientTable className="my-4" data={patientData} />
-          ) : (
-            <SimpleDataTable
-              className="my-4"
-              data={{ "No data found": "" }}
-              title={"Patient Information"}
-            />
-          )}
-          {!_.isEmpty(treatmentVolumesData) ? (
-            <TreatmentVolumeTable
-              className="my-4"
-              data={treatmentVolumesData}
-            />
-          ) : (
-            <SimpleDataTable
-              className="my-4"
-              data={{ "No data found": "" }}
-              title={"Radiotherapy Volumes (Targets)"}
-            />
-          )}
-          {!_.isEmpty(treatmentPhaseData) ? (
-            <TreatmentPhaseTable className="my-4" data={treatmentPhaseData} />
-          ) : (
-            <SimpleDataTable
-              className="my-4"
-              data={{ "No data found": "" }}
-              title={"Phase"}
-            />
-          )}
-          {!_.isEmpty(plannedTreatmentPhaseData) ? (
-            <PlannedTreatmentPhaseTable
-              className="my-4"
-              data={plannedTreatmentPhaseData}
-            />
-          ) : (
-            <SimpleDataTable
-              className="my-4"
-              data={{ "No data found": "" }}
-              title={"Planned Phase"}
-            />
-          )}
-          {!_.isEmpty(plannedCourseData) ? (
-            <PlannedCourseTable className="my-4" data={plannedCourseData} />
-          ) : (
-            <SimpleDataTable
-              className="my-4"
-              data={{ "No data found": "" }}
-              title={"Planned Course"}
-            />
-          )}
-          {!_.isEmpty(courseSummaryData) ? (
-            <CourseSummaryTable className="my-4" data={courseSummaryData} />
-          ) : (
-            <SimpleDataTable
-              className="my-4"
-              data={{ "No data found": "" }}
-              title={"Course Summary"}
-            />
-          )}
+          <PatientTable className="my-4" data={patientData} />
+          <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
+          <TreatmentPhaseTable className="my-4" data={treatmentPhaseData} />
+          <PlannedTreatmentPhaseTable
+            className="my-4"
+            data={plannedTreatmentPhaseData}
+          />
+          <PlannedCourseTable className="my-4" data={plannedCourseData} />
+          <CourseSummaryTable className="my-4" data={courseSummaryData} />
         </>
       )}
     </>
