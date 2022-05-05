@@ -5,7 +5,7 @@ function TableData({ isFirstCol, data }) {
     return (
       <th
         scope="row"
-        className={`font-medium px-6 py-3 text-sm text-gray-900 overflow-x-auto `}
+        className={`font-medium px-6 py-3 text-sm text-gray-900 overflow-x-auto whitespace-pre-wrap`}
         style={{
           wordBreak: "break-word",
           minWidth: "10rem",
@@ -17,7 +17,7 @@ function TableData({ isFirstCol, data }) {
   } else {
     return (
       <td
-        className={`font-light px-6 py-3 text-sm text-gray-900 overflow-x-auto `}
+        className={`font-light px-6 py-3 text-sm text-gray-900 overflow-x-auto whitespace-pre-wrap`}
         style={{
           wordBreak: "break-word",
           minWidth: "20rem",

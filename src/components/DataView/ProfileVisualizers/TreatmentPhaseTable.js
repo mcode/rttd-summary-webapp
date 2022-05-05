@@ -20,7 +20,7 @@ function TreatmentPhaseTable({ data = [], className }) {
     const treatmentPhaseData = { ...treatmentPhase };
     delete treatmentPhaseData["Total Dose Delivered [cGy]"];
     return (
-      <div className={className}>
+      <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}
         <SimpleDataTable data={treatmentPhaseData} title={title} />
         {/* Display the volume data with the multi-entry table */}
