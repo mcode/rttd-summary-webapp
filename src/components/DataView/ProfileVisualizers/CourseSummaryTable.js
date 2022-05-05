@@ -1,7 +1,12 @@
 import SimpleDataTable from "../SimpleDataTable";
 import MultiEntryDataTable from "../MultiEntryDataTable";
+import EmptyDataTable from "../EmptyDataTable";
+import _ from "lodash";
 
 function CourseSummaryTable({ data = [], className }) {
+  if (_.isEmpty(data)) {
+    return <EmptyDataTable title="Course Summary" className={className} />;
+  }
   return data.map((courseSummary, i) => {
     const title = `Course Summary ${i + 1}`;
     const numVolumes =
