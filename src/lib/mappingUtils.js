@@ -39,7 +39,7 @@ function mapPatient(patient) {
   output["Last Name"] = patient.name[0].family;
   output["Date of Birth"] = patient.birthDate;
   output["Administrative Gender"] = patient.gender;
-  output["Birth Sex"] = patient.extension[0].valueCode;
+  output["Birth Sex"] = "N/A"; //patient.extension[0].valueCode;
   return output;
 }
 
