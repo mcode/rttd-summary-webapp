@@ -51,7 +51,7 @@ function mapPatient(patient) {
 function mapCourseSummary(procedure) {
   const summaries = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.meta.profile contains 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-course-summary').resource"
+    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
   );
   const outputs = [];
   summaries.forEach((summary) => {
@@ -120,7 +120,7 @@ function mapTreatedPhase(procedure) {
 /**
  * Takes a bundle of serviceRequests and returns an array of mappings of Phase data to be displayed in the table
  * Based on https://build.fhir.org/ig/HL7/codex-radiation-therapy/StructureDefinition-codexrt-radiotherapy-planned-phase.html
- * @param {Object} procedure - A bundle of serviceRequests
+ * @param {Object} serviceRequests - A bundle of serviceRequests
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
 function mapPlannedTreatmentPhases(serviceRequests) {
@@ -160,7 +160,7 @@ function mapPlannedTreatmentPhases(serviceRequests) {
 /**
  * Takes a bundle of serviceRequests returned and returns an array of mappings of PlannedCourse data to be displayed in the table
  * Based on https://build.fhir.org/ig/HL7/codex-radiation-therapy/StructureDefinition-codexrt-radiotherapy-planned-course.html
- * @param {Object} procedure - A bundle of serviceRequests
+ * @param {Object} serviceRequests - A bundle of serviceRequests
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
 function mapPlannedCourses(serviceRequests) {
