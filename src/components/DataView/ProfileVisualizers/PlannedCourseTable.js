@@ -19,13 +19,13 @@ function PlannedCourseTable({ data = [], className }) {
           plannedCourse["Number of Planned Fractions"][i],
         "Total Planned Dose [cGy]":
           plannedCourse["Total Planned Dose [cGy]"][i],
-        "Body Sites": plannedCourse["Body Sites"][i],
+        Volumes: plannedCourse["Volumes"][i],
       });
     }
     const plannedCourseData = { ...plannedCourse };
     delete plannedCourseData["Number of Planned Fractions"];
     delete plannedCourseData["Total Planned Dose [cGy]"];
-    delete plannedCourseData["Body Sites"];
+    delete plannedCourseData["Volumes"];
     return (
       <div key={i} className={className}>
         {/* Display the base course data with a simple table */}

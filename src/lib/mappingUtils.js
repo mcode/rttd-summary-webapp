@@ -23,6 +23,9 @@ function getTechniques(resource, resourceType) {
     )
     .join("\n");
 }
+function getBodySites(resource, resourceType) {
+  return fhirpath.evaluate(resource, `${resourceType}.bodySite.coding.display`);
+}
 
 /**
  * Takes a patient resource returned by makeRequests and returns a mapping of Patient data to be displayed in the table
@@ -74,10 +77,11 @@ function mapCourseSummary(procedure) {
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
+    output["Volumes"] = fhirpath.evaluate(
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
+    output["Body Sites"] = getBodySites(summary, "Procedure");
     outputs.push(output);
   });
   return outputs;
@@ -111,10 +115,11 @@ function mapTreatedPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
+    output["Volumes"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
+    output["Body Sites"] = getBodySites(phase, "Procedure");
     outputs.push(output);
   });
   return outputs;
@@ -154,10 +159,11 @@ function mapPlannedTreatmentPhases(serviceRequests) {
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
+    output["Volumes"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
+    output["Body Sites"] = getBodySites(plannedPhase, "ServiceRequest");
     outputs.push(output);
   });
   return outputs;
@@ -204,10 +210,11 @@ function mapPlannedCourses(serviceRequests) {
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Body Sites"] = fhirpath.evaluate(
+    output["Volumes"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
+    output["Body Sites"] = getBodySites(plannedCourse, "ServiceRequest");
     //NOT included yet
     // output["Energy or Isotope"]
     // output["Treatment Device"]
