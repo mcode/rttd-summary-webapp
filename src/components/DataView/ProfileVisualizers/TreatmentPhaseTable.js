@@ -18,12 +18,12 @@ function TreatmentPhaseTable({ data = [], className }) {
       volumesData.push({
         "Total Dose Delivered [cGy]":
           treatmentPhase["Total Dose Delivered [cGy]"][i],
-        Volumes: treatmentPhase["Volumes"][i],
+        Volume: treatmentPhase["Volume"][i],
       });
     }
     const treatmentPhaseData = { ...treatmentPhase };
     delete treatmentPhaseData["Total Dose Delivered [cGy]"];
-    delete treatmentPhaseData["Volumes"];
+    delete treatmentPhaseData["Volume"];
     return (
       <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}

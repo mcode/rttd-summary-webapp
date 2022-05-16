@@ -77,7 +77,7 @@ function mapCourseSummary(procedure) {
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Volumes"] = fhirpath.evaluate(
+    output["Volume"] = fhirpath.evaluate(
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
@@ -115,7 +115,7 @@ function mapTreatedPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Volumes"] = fhirpath.evaluate(
+    output["Volume"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
@@ -159,7 +159,7 @@ function mapPlannedTreatmentPhases(serviceRequests) {
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Volumes"] = fhirpath.evaluate(
+    output["Volume"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
@@ -210,7 +210,7 @@ function mapPlannedCourses(serviceRequests) {
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Volumes"] = fhirpath.evaluate(
+    output["Volume"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
