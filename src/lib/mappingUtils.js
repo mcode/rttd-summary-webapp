@@ -77,6 +77,10 @@ function mapCourseSummary(procedure) {
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
+    output["Volume"] = fhirpath.evaluate(
+      summary,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
+    );
     output["Body Sites"] = getBodySites(summary, "Procedure");
     outputs.push(output);
   });
@@ -110,6 +114,10 @@ function mapTreatedPhase(procedure) {
     output["Total Dose Delivered [cGy]"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
+    );
+    output["Volume"] = fhirpath.evaluate(
+      phase,
+      "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(phase, "Procedure");
     outputs.push(output);
@@ -150,6 +158,10 @@ function mapPlannedTreatmentPhases(serviceRequests) {
     output["Total Planned Dose [cGy]"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
+    );
+    output["Volume"] = fhirpath.evaluate(
+      plannedPhase,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(plannedPhase, "ServiceRequest");
     outputs.push(output);
@@ -197,6 +209,10 @@ function mapPlannedCourses(serviceRequests) {
     output["Total Planned Dose [cGy]"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
+    );
+    output["Volume"] = fhirpath.evaluate(
+      plannedCourse,
+      "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(plannedCourse, "ServiceRequest");
     //NOT included yet
