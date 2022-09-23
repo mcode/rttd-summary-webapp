@@ -42,8 +42,15 @@ function RequestForm({
   }
   return (
     <>
-      <div className="grid place-items-center absolute inset-0 outline-none overflow-x-hidden overflow-y-auto bg-gray-400/50">
-        <div className="lg:w-4/12 p-3 rounded-lg border-black bg-white">
+      <div
+        onClick={handleClose}
+        className="grid place-items-center absolute inset-0 outline-none overflow-x-hidden overflow-y-auto bg-gray-400/50"
+      >
+        <div
+          style={{ "border-width": "1px" }}
+          className="lg:w-4/12 p-3 rounded-lg border-black bg-white"
+          onClick={(e) => e.stopPropagation()}
+        >
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -53,20 +60,24 @@ function RequestForm({
               currentPatientQuery={currentPatientQuery}
               setCurrentPatientQuery={setCurrentPatientQuery}
             />
+            <hr></hr>
             <PatientIdInput
               currentPatientQuery={currentPatientQuery}
               setCurrentPatientQuery={setCurrentPatientQuery}
             />
+            <hr></hr>
             <NameInput
               currentPatientQuery={currentPatientQuery}
               setCurrentPatientQuery={setCurrentPatientQuery}
               nameType="Given"
             />
+            <hr></hr>
             <NameInput
               currentPatientQuery={currentPatientQuery}
               setCurrentPatientQuery={setCurrentPatientQuery}
               nameType="Family"
             />
+            <hr></hr>
             <GenderInput
               currentPatientQuery={currentPatientQuery}
               setCurrentPatientQuery={setCurrentPatientQuery}
