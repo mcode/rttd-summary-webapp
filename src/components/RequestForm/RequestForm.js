@@ -43,13 +43,13 @@ function RequestForm({
   return (
     <>
       <div
-        onClick={handleClose}
+        onMouseDown={handleClose}
         className="grid place-items-center absolute inset-0 outline-none overflow-x-hidden overflow-y-auto bg-gray-400/50"
       >
         <div
-          style={{ "border-width": "1px" }}
+          style={{ borderWidth: "1px" }}
           className="lg:w-4/12 p-3 rounded-lg border-black bg-white"
-          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           <form
             onSubmit={async (e) => {
