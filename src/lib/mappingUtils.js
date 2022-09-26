@@ -56,7 +56,6 @@ function mapCourseSummary(procedure) {
   const outputs = [];
   summaries.forEach((summary) => {
     const output = {};
-    delete summary.performedPeriod;
     output["Course Label"] = summary?.identifier?.[0]?.value ?? "N/A";
     output["Treatment Status"] = summary?.status;
     output["Treatment Intent"] = getProcedureIntent(summary, "Procedure");
