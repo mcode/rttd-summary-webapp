@@ -79,7 +79,7 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
             <Plus className="inline ml-3" size={24} onClick={addHeader}></Plus>
           </div>
           <hr></hr>
-          <div className="grid grid-cols-12 overflow-auto max-h-96 mt-4">
+          <div className="grid grid-cols-12 overflow-auto max-h-96 mt-4 p-px">
             {editedRequestHeaders.length > 0 ? (
               editedRequestHeaders.map(([key, value], idx) => {
                 return (
@@ -104,12 +104,13 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
                     ></input>
                     <button
                       type="button"
+                      className="mb-4"
                       onClick={(e) => {
                         e.preventDefault();
                         removeHeader(idx);
                       }}
                     >
-                      <Trash className="inline mb-4" size={20} />
+                      <Trash className="inline" size={20} />
                     </button>
                   </Fragment>
                 );
