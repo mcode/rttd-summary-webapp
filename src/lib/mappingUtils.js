@@ -26,22 +26,21 @@ function getTechniques(resource, resourceType) {
 function getBodySites(resource, resourceType) {
   return fhirpath.evaluate(resource, `${resourceType}.bodySite.coding.display`);
 }
-function getIdentifier(patient) {
-  const idType = fhirpath.evaluate(
-    patient,
-    "Patient.identifier.first().type.coding.first().display"
-  )[0];
-  const idSystem = fhirpath.evaluate(
-    patient,
-    "Patient.identifier.first().type.coding.first().system"
-  )[0];
-  const idValue = fhirpath.evaluate(
-    patient,
-    "Patient.identifier.first().value"
-  )[0];
-  if (idType) return `${idType}: ${idValue}`;
-  if (idSystem) return `${idValue} (System: ${idSystem})`;
-  return idValue;
+function getIdentifiers(patient) {
+  const identifiers = [];
+  patient?.identifier?.forEach((identifier) => {
+    const idType = identifier.type?.coding?.[0].display;
+    const idSystem = identifier.type?.coding?.[0].system;
+    const idValue = identifier.value;
+    if (idType) {
+      identifiers.push(`${idType}: ${idValue}`);
+    } else if (idSystem) {
+      identifiers.push(`${idValue} (System: ${idSystem})`);
+    } else {
+      identifiers.push(`${idValue} (No system provided)`);
+    }
+  });
+  return identifiers.join(", ");
 }
 function getMetadata(resource) {
   const metadata = {};
@@ -58,7 +57,7 @@ function getMetadata(resource) {
  */
 function mapPatient(patient, includeMetadata = true) {
   const output = {};
-  output["Identifier"] = getIdentifier(patient);
+  output["Identifier"] = getIdentifiers(patient);
   output["First Name"] = patient?.name?.[0]?.given.join(" ");
   output["Last Name"] = patient?.name?.[0]?.family;
   output["Date of Birth"] = patient?.birthDate;
@@ -273,10 +272,10 @@ function mapVolumes(volumes, includeMetadata = true) {
     output["Location"] = volume?.location?.coding?.[0]?.display ?? undefined;
     output["Location Qualifier"] =
       volume?.locationQualifier?.[0]?.coding?.[0]?.display ?? undefined;
-      outputs.push({
-        ...output,
-        ...(includeMetadata ? getMetadata(volume) : {}),
-      });
+    outputs.push({
+      ...output,
+      ...(includeMetadata ? getMetadata(volume) : {}),
+    });
   });
   return outputs;
 }
