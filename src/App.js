@@ -34,9 +34,11 @@ function App() {
   const [searchedPatientIds, setSearchedPatientIds] = useState([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showHeaderForm, setShowHeaderForm] = useState(false);
-  const [currentHeaderSet, setCurrentHeaderSet] = useState([]);
-  const [requestHeaders, setRequestHeaders] = useState({});
-  const [currentHeaderKey, setCurrentHeaderKey] = useState();
+  const [requestHeaders, setRequestHeaders] = useState([
+    ["", ""],
+    ["", ""],
+    ["", ""],
+  ]);
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
   const [patientQueries, setPatientQueries] = useState([
@@ -96,10 +98,19 @@ function App() {
     setShowRequestForm(true);
   }
 
-  function openHeaderForm(headerSet) {
-    setCurrentHeaderSet(headerSet);
-    setCurrentHeaderKey(headerSet[0]);
+  function openHeaderForm() {
     setShowHeaderForm(true);
+  }
+
+  function createHeaderObj() {
+    const headerObj = {};
+    requestHeaders.forEach(([key, value]) => {
+      if (key && value) {
+        headerObj[key] = value;
+      }
+    });
+
+    return headerObj;
   }
 
   /**
@@ -108,27 +119,27 @@ function App() {
    */
   async function makeRequests() {
     const resourceMap = new Map();
+    const headerObj = createHeaderObj();
     // Convert the query parameter objects into query urls
     const searchQueries = patientQueries.map((queryObj) =>
       generateQueryUrl(serverUrl, queryObj)
     );
 
     // Compact the return result to remove empty values
-    const patientResources = await fetchPatients(
-      searchQueries,
-      requestHeaders
-    ).then((patients) => _.compact(patients));
+    const patientResources = await fetchPatients(searchQueries, headerObj).then(
+      (patients) => _.compact(patients)
+    );
     for (const patient of patientResources) {
       const procedures = await fetchProcedures(
         serverUrl,
         patient.id,
-        requestHeaders
+        headerObj
       );
-      const volumes = await fetchVolumes(serverUrl, patient.id, requestHeaders);
+      const volumes = await fetchVolumes(serverUrl, patient.id, headerObj);
       const serviceRequests = await fetchServiceRequests(
         serverUrl,
         patient.id,
-        requestHeaders
+        headerObj
       );
       resourceMap.set(patient.id, [
         mapPatient(patient),
@@ -167,9 +178,9 @@ function App() {
               <Plus className="inline m-2" size={24} />
             </button>
           </span>
-          {Object.entries(requestHeaders).length > 0 ? (
+          {requestHeaders.some((header) => header[0] && header[1]) ? (
             <RequestHeadersList
-              requestHeader={requestHeaders}
+              requestHeaders={requestHeaders}
               setRequestHeaders={setRequestHeaders}
               openHeaderForm={openHeaderForm}
             />
@@ -241,12 +252,9 @@ function App() {
       )}
       {showHeaderForm && (
         <HeaderForm
-          currentHeaderSet={currentHeaderSet}
           requestHeaders={requestHeaders}
           setRequestHeaders={setRequestHeaders}
           setDisplay={setShowHeaderForm}
-          setCurrentHeaderSet={setCurrentHeaderSet}
-          currentHeaderKey={currentHeaderKey}
         />
       )}
     </>

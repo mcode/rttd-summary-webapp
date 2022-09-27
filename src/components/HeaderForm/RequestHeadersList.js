@@ -1,29 +1,12 @@
-import { Trash } from "react-feather";
-
-function RequestHeadersList({
-  requestHeader,
-  setRequestHeaders,
-  openHeaderForm,
-}) {
-  /**
-   * Remove a current query # from a list
-   * @param {int} index
-   * @returns nothing; sets state to update patientQueries
-   */
-  function removeHeader(key) {
-    const requestObj = { ...requestHeader };
-    delete requestObj[key];
-    setRequestHeaders(requestObj);
-  }
-
-  function handleHeaderSelection(key, value) {
-    openHeaderForm([key, value]);
+function RequestHeadersList({ requestHeaders, openHeaderForm }) {
+  function handleHeaderSelection() {
+    openHeaderForm();
   }
 
   return (
     <ul className="max-h-96 overflow-y-auto">
-      {Object.entries(requestHeader).map(([key, value]) => {
-        return (
+      {requestHeaders.map(([key, value]) => {
+        return key && value ? (
           <li
             className="flex text-base border border-b-0 last:border-b border-slate-500 w-full p-2 justify-between items-center"
             key={key}
@@ -31,24 +14,13 @@ function RequestHeadersList({
             <button
               type="button"
               onClick={(e) => {
-                handleHeaderSelection(key, value);
+                handleHeaderSelection();
               }}
             >
               {`${key}: ${value}`}
             </button>
-            <button
-              type="button"
-              className="flex"
-              // Inline click handler specific to this ith element
-              onClick={(e) => {
-                e.preventDefault();
-                removeHeader(key);
-              }}
-            >
-              <Trash className="inline" size={16} />
-            </button>
           </li>
-        );
+        ) : undefined;
       })}
     </ul>
   );
