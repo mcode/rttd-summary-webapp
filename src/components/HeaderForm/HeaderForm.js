@@ -76,7 +76,15 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
             >
               Value
             </label>
-            <Plus className="inline ml-3" size={24} onClick={addHeader}></Plus>
+            <button
+              className="col-span-1 justify-center items-center"
+              onClick={(e) => {
+                e.preventDefault();
+                addHeader();
+              }}
+            >
+              <Plus className="inline" size={24}></Plus>
+            </button>
           </div>
           <hr></hr>
           <div className="grid grid-cols-12 overflow-auto max-h-96 mt-4 p-px">
