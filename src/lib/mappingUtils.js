@@ -34,12 +34,12 @@ function getBodySites(resource, resourceType) {
  */
 function mapPatient(patient) {
   const output = {};
-  output["ID"] = patient.identifier[0].value;
-  output["First Name"] = patient.name[0].given.join(" ");
-  output["Last Name"] = patient.name[0].family;
-  output["Date of Birth"] = patient.birthDate;
-  output["Administrative Gender"] = patient.gender;
-  output["Birth Sex"] = "N/A"; //patient.extension[0].valueCode;
+  output["ID"] = patient?.identifier?.[0]?.value;
+  output["First Name"] = patient?.name?.[0]?.given.join(" ");
+  output["Last Name"] = patient?.name?.[0]?.family;
+  output["Date of Birth"] = patient?.birthDate;
+  output["Administrative Gender"] = patient?.gender;
+  output["Birth Sex"] = "N/A"; //patient?.extension[0].valueCode;
   return output;
 }
 
@@ -56,13 +56,11 @@ function mapCourseSummary(procedure) {
   const outputs = [];
   summaries.forEach((summary) => {
     const output = {};
-    output["Course Label"] = summary.identifier
-      ? summary.identifier[0].value
-      : "N/A";
-    output["Treatment Status"] = summary.status;
+    output["Course Label"] = summary?.identifier?.[0]?.value ?? "N/A";
+    output["Treatment Status"] = summary?.status;
     output["Treatment Intent"] = getProcedureIntent(summary, "Procedure");
-    output["Start Date"] = summary.performedPeriod.start;
-    output["End Date"] = summary.performedPeriod.end;
+    output["Start Date"] = summary?.performedPeriod?.start;
+    output["End Date"] = summary?.performedPeriod?.end;
     output["Modalities"] = getModalities(summary, "Procedure");
     output["Techniques"] = getTechniques(summary, "Procedure");
     output["Number of Sessions"] = fhirpath.evaluate(
@@ -100,11 +98,9 @@ function mapTreatedPhase(procedure) {
   const outputs = [];
   phases.forEach((phase) => {
     const output = {};
-    output["Phase Label"] = phase.identifier
-      ? phase.identifier[0].value
-      : "N/A";
-    output["Start Date"] = phase.performedPeriod.start;
-    output["End Date"] = phase.performedPeriod.end;
+    output["Phase Label"] = phase?.identifier?.[0]?.value ?? "N/A";
+    output["Start Date"] = phase?.performedPeriod?.start;
+    output["End Date"] = phase?.performedPeriod?.end;
     output["Modalities"] = getModalities(phase, "Procedure");
     output["Techniques"] = getTechniques(phase, "Procedure");
     output["Number of Fractions Delivered"] = fhirpath.evaluate(
@@ -139,11 +135,10 @@ function mapPlannedTreatmentPhases(serviceRequests) {
   const outputs = [];
   plannedPhases.forEach((plannedPhase) => {
     const output = {};
-    output["Planned Phase Label"] = plannedPhase.identifier
-      ? plannedPhase.identifier[0].value
-      : "N/A";
-    output["Phase Status"] = plannedPhase.status;
-    output["Request Intent"] = plannedPhase.intent;
+    output["Planned Phase Label"] =
+      plannedPhase?.identifier?.[0]?.value ?? "N/A";
+    output["Phase Status"] = plannedPhase?.status;
+    output["Request Intent"] = plannedPhase?.intent;
     // IG states there will be at most one procedure intent
     output["Modalities"] = getModalities(plannedPhase, "ServiceRequest");
     output["Techniques"] = getTechniques(plannedPhase, "ServiceRequest");
@@ -183,11 +178,9 @@ function mapPlannedCourses(serviceRequests) {
   const outputs = [];
   plannedCourses.forEach((plannedCourse) => {
     const output = {};
-    output["Course Label"] = plannedCourse.identifier
-      ? plannedCourse.identifier[0].value
-      : "N/A";
-    output["Course Status"] = plannedCourse.status;
-    output["Request Intent"] = plannedCourse.intent;
+    output["Course Label"] = plannedCourse?.identifier?.[0]?.value && "N/A";
+    output["Course Status"] = plannedCourse?.status;
+    output["Request Intent"] = plannedCourse?.intent;
     // IG states there will be at most one procedure intent
     output["Procedure Intent"] = getProcedureIntent(
       plannedCourse,
@@ -238,15 +231,10 @@ function mapVolumes(volumes) {
       volume,
       "BodyStructure.identifier.where(use = 'usual').value"
     )[0];
-    output["Type"] = volume.morphology
-      ? volume.morphology.coding[0].display
-      : undefined;
-    output["Location"] = volume.location
-      ? volume.location.coding[0].display
-      : undefined;
-    output["Location Qualifier"] = volume.locationQualifier
-      ? volume.locationQualifier[0].coding[0].display
-      : undefined;
+    output["Type"] = volume?.morphology?.coding?.[0]?.display ?? undefined;
+    output["Location"] = volume?.location?.coding?.[0]?.display ?? undefined;
+    output["Location Qualifier"] =
+      volume?.locationQualifier?.[0]?.coding?.[0]?.display ?? undefined;
     outputs.push(output);
   });
   return outputs;
