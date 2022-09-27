@@ -3,14 +3,15 @@ import axios from "axios";
 /**
  * Takes an array of patient query URLS and fetches FHIR resources for each of them
  * @param {String[]} patientQueries - An array of query urls to perform GET requests on
+ * @param {Object} requestHeaders - An object containing request headers to be included in each GET request
  * @returns {Object[]} Returns an array of FHIR patient resources
  */
-async function fetchPatients(patientQueries) {
+async function fetchPatients(patientQueries, requestHeaders) {
   let patientResourceArray = [];
 
   for (const query of patientQueries) {
     await axios
-      .get(query)
+      .get(query, { headers: requestHeaders })
       .then((res) => {
         res.data.entry.forEach((entry) => {
           if (
@@ -69,12 +70,16 @@ function generateQueryUrl(serverUrl, queryObj) {
 
 /**
  * Takes a patient ID and fetches RTTD Procedure resources that patient
+ * @param {String} severUrl - The base sever URL
  * @param {String} patientId - A patient ID to fetch Procedure resources for
+ * @param {Object} requestHeaders - An object containing request headers to be included in each GET request
  * @returns {Object[]} Returns an array of FHIR Procedure resources for that Patient
  */
-async function fetchProcedures(serverUrl, patientId) {
+async function fetchProcedures(serverUrl, patientId, requestHeaders) {
   const procedureResources = await axios
-    .get(`${serverUrl}/Procedure?subject:Patient=${patientId}`)
+    .get(`${serverUrl}/Procedure?subject:Patient=${patientId}`, {
+      headers: requestHeaders,
+    })
     .then((res) => res.data)
     .catch((e) => {
       console.error(e);
@@ -85,12 +90,16 @@ async function fetchProcedures(serverUrl, patientId) {
 
 /**
  * Takes a patient ID and fetches RTTD Volumes resources that patient
+ * @param {String} severUrl - The base sever URL
  * @param {String} patientId - A patient ID to fetch Procedure resources for
+ * @param {Object} requestHeaders - An object containing request headers to be included in each GET request
  * @returns {Object[]} Returns an array of FHIR BodyStructure resources for that Patient
  */
-async function fetchVolumes(serverUrl, patientId) {
+async function fetchVolumes(serverUrl, patientId, requestHeaders) {
   const volumeResources = await axios
-    .get(`${serverUrl}/BodyStructure?patient:Patient=${patientId}`)
+    .get(`${serverUrl}/BodyStructure?patient:Patient=${patientId}`, {
+      headers: requestHeaders,
+    })
     .then((res) => res.data)
     .catch((e) => {
       console.error(e);
@@ -101,12 +110,16 @@ async function fetchVolumes(serverUrl, patientId) {
 
 /**
  * Takes a patient ID and fetches ServiceRequest resources that patient
+ * @param {String} severUrl - The base sever URL
  * @param {String} patientId - A patient ID to fetch ServiceRequest resources for
+ * @param {Object} requestHeaders - An object containing request headers to be included in each GET request
  * @returns {Object[]} Returns an array of FHIR ServiceRequest resources for that Patient
  */
-async function fetchServiceRequests(serverUrl, patientId) {
+async function fetchServiceRequests(serverUrl, patientId, requestHeaders) {
   const serviceRequests = await axios
-    .get(`${serverUrl}/ServiceRequest?subject:Patient=${patientId}`)
+    .get(`${serverUrl}/ServiceRequest?subject:Patient=${patientId}`, {
+      headers: requestHeaders,
+    })
     .then((res) => res.data)
     .catch((e) => {
       console.error(e);

@@ -39,7 +39,7 @@ function PatientQueryList({
     if (queryObj.gender) {
       displayStr += `${displayStr ? "; " : ""}gender: ${queryObj.gender}`;
     }
-    return displayStr;
+    return displayStr || "No query paramaters";
   }
 
   function handleQuerySelection(queryObj, queryIdx) {
