@@ -44,9 +44,9 @@ function getIdentifiers(patient) {
 }
 function getMetadata(resource) {
   const metadata = {};
-  metadata["Resource ID"] = resource.id;
-  metadata["Version ID"] = resource.meta.versionId;
-  metadata["Last Updated"] = resource.meta.lastUpdated;
+  metadata["Resource ID"] = resource?.id;
+  metadata["Version ID"] = resource?.meta?.versionId;
+  metadata["Last Updated"] = resource?.meta?.lastUpdated;
   return metadata;
 }
 
