@@ -26,21 +26,44 @@ function getTechniques(resource, resourceType) {
 function getBodySites(resource, resourceType) {
   return fhirpath.evaluate(resource, `${resourceType}.bodySite.coding.display`);
 }
+function getIdentifiers(patient) {
+  const identifiers = [];
+  patient?.identifier?.forEach((identifier) => {
+    const idType = identifier.type?.coding?.[0].display;
+    const idSystem = identifier.type?.coding?.[0].system;
+    const idValue = identifier.value;
+    if (idType) {
+      identifiers.push(`${idType}: ${idValue}`);
+    } else if (idSystem) {
+      identifiers.push(`${idValue} (System: ${idSystem})`);
+    } else {
+      identifiers.push(`${idValue} (No system provided)`);
+    }
+  });
+  return identifiers.join(", ");
+}
+function getMetadata(resource) {
+  const metadata = {};
+  metadata["Resource ID"] = resource?.id;
+  metadata["Version ID"] = resource?.meta?.versionId;
+  metadata["Last Updated"] = resource?.meta?.lastUpdated;
+  return metadata;
+}
 
 /**
  * Takes a patient resource returned by makeRequests and returns a mapping of Patient data to be displayed in the table
  * @param {Object} patient - A patient resource
  * @returns {Object} Returns an object with key/value pairs of data to display in the table
  */
-function mapPatient(patient) {
+function mapPatient(patient, includeMetadata = true) {
   const output = {};
-  output["ID"] = patient?.identifier?.[0]?.value;
+  output["Identifier"] = getIdentifiers(patient);
   output["First Name"] = patient?.name?.[0]?.given.join(" ");
   output["Last Name"] = patient?.name?.[0]?.family;
   output["Date of Birth"] = patient?.birthDate;
   output["Administrative Gender"] = patient?.gender;
   output["Birth Sex"] = "N/A"; //patient?.extension[0].valueCode;
-  return output;
+  return { ...output, ...(includeMetadata ? getMetadata(patient) : {}) };
 }
 
 /**
@@ -48,7 +71,7 @@ function mapPatient(patient) {
  * @param {Object} procedure - A bundle of procedures
  * @returns {Object} Returns an object with key/value pairs of data to display in the table
  */
-function mapCourseSummary(procedure) {
+function mapCourseSummary(procedure, includeMetadata = true) {
   const summaries = fhirpath.evaluate(
     procedure,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
@@ -57,6 +80,10 @@ function mapCourseSummary(procedure) {
   summaries.forEach((summary) => {
     const output = {};
     output["Course Label"] = summary?.identifier?.[0]?.value ?? "N/A";
+    output["Diagnosis"] = fhirpath.evaluate(
+      summary,
+      "Procedure.reasonCode.coding.display"
+    )[0];
     output["Treatment Status"] = summary?.status;
     output["Treatment Intent"] = getProcedureIntent(summary, "Procedure");
     output["Start Date"] = summary?.performedPeriod?.start;
@@ -75,12 +102,15 @@ function mapCourseSummary(procedure) {
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Volume"] = fhirpath.evaluate(
+    output["Volume Label"] = fhirpath.evaluate(
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(summary, "Procedure");
-    outputs.push(output);
+    outputs.push({
+      ...output,
+      ...(includeMetadata ? getMetadata(summary) : {}),
+    });
   });
   return outputs;
 }
@@ -90,7 +120,7 @@ function mapCourseSummary(procedure) {
  * @param {Object} procedure - A bundle of procedures
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
-function mapTreatedPhase(procedure) {
+function mapTreatedPhase(procedure, includeMetadata = true) {
   const phases = fhirpath.evaluate(
     procedure,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
@@ -99,6 +129,7 @@ function mapTreatedPhase(procedure) {
   phases.forEach((phase) => {
     const output = {};
     output["Phase Label"] = phase?.identifier?.[0]?.value ?? "N/A";
+    output["Phase Status"] = phase?.status;
     output["Start Date"] = phase?.performedPeriod?.start;
     output["End Date"] = phase?.performedPeriod?.end;
     output["Modalities"] = getModalities(phase, "Procedure");
@@ -111,12 +142,12 @@ function mapTreatedPhase(procedure) {
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'totalDoseDelivered').valueQuantity.value"
     );
-    output["Volume"] = fhirpath.evaluate(
+    output["Volume Label"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(phase, "Procedure");
-    outputs.push(output);
+    outputs.push({ ...output, ...(includeMetadata ? getMetadata(phase) : {}) });
   });
   return outputs;
 }
@@ -127,7 +158,7 @@ function mapTreatedPhase(procedure) {
  * @param {Object} serviceRequests - A bundle of serviceRequests
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
-function mapPlannedTreatmentPhases(serviceRequests) {
+function mapPlannedTreatmentPhases(serviceRequests, includeMetadata = true) {
   const plannedPhases = fhirpath.evaluate(
     serviceRequests,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
@@ -154,12 +185,15 @@ function mapPlannedTreatmentPhases(serviceRequests) {
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Volume"] = fhirpath.evaluate(
+    output["Volume Label"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(plannedPhase, "ServiceRequest");
-    outputs.push(output);
+    outputs.push({
+      ...output,
+      ...(includeMetadata ? getMetadata(plannedPhase) : {}),
+    });
   });
   return outputs;
 }
@@ -170,7 +204,7 @@ function mapPlannedTreatmentPhases(serviceRequests) {
  * @param {Object} serviceRequests - A bundle of serviceRequests
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
-function mapPlannedCourses(serviceRequests) {
+function mapPlannedCourses(serviceRequests, includeMetadata = true) {
   const plannedCourses = fhirpath.evaluate(
     serviceRequests,
     "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
@@ -203,7 +237,7 @@ function mapPlannedCourses(serviceRequests) {
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'totalDose').valueQuantity.value"
     );
-    output["Volume"] = fhirpath.evaluate(
+    output["Volume Label"] = fhirpath.evaluate(
       plannedCourse,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-dose-planned-to-volume').extension.where(url = 'volume').valueReference.display"
     );
@@ -212,7 +246,10 @@ function mapPlannedCourses(serviceRequests) {
     // output["Energy or Isotope"]
     // output["Treatment Device"]
 
-    outputs.push(output);
+    outputs.push({
+      ...output,
+      ...(includeMetadata ? getMetadata(plannedCourse) : {}),
+    });
   });
   return outputs;
 }
@@ -222,7 +259,7 @@ function mapPlannedCourses(serviceRequests) {
  * @param {Object} volumes - A bundle of radiotherapy volume body structures
  * @returns {Object[]} Returns an array of objects with key/value pairs of data to display in the table
  */
-function mapVolumes(volumes) {
+function mapVolumes(volumes, includeMetadata = true) {
   const bodyStructures = fhirpath.evaluate(volumes, "Bundle.entry.resource");
   const outputs = [];
   bodyStructures.forEach((volume) => {
@@ -235,7 +272,10 @@ function mapVolumes(volumes) {
     output["Location"] = volume?.location?.coding?.[0]?.display ?? undefined;
     output["Location Qualifier"] =
       volume?.locationQualifier?.[0]?.coding?.[0]?.display ?? undefined;
-    outputs.push(output);
+    outputs.push({
+      ...output,
+      ...(includeMetadata ? getMetadata(volume) : {}),
+    });
   });
   return outputs;
 }

@@ -19,13 +19,13 @@ function CourseSummaryTable({ data = [], className }) {
           courseSummary["Number of Delivered Fractions"][i],
         "Total Delivered Dose [cGy]":
           courseSummary["Total Delivered Dose [cGy]"][i],
-        Volume: courseSummary["Volume"][i],
+        "Volume Label": courseSummary["Volume Label"][i],
       });
     }
     const courseData = { ...courseSummary };
     delete courseData["Number of Delivered Fractions"];
     delete courseData["Total Delivered Dose [cGy]"];
-    delete courseData["Volume"];
+    delete courseData["Volume Label"];
     return (
       <div key={i} className={className}>
         {/* Display the base course data with a simple table */}

@@ -19,13 +19,13 @@ function PlannedTreatmentPhaseTable({ data = [], className }) {
         "Planned Dose per Fraction [cGy]":
           plannedPhase["Planned Dose per Fraction [cGy]"][i],
         "Total Planned Dose [cGy]": plannedPhase["Total Planned Dose [cGy]"][i],
-        Volume: plannedPhase["Volume"][i],
+        "Volume Label": plannedPhase["Volume Label"][i],
       });
     }
     const plannedPhaseData = { ...plannedPhase };
     delete plannedPhaseData["Planned Dose per Fraction [cGy]"];
     delete plannedPhaseData["Total Planned Dose [cGy]"];
-    delete plannedPhaseData["Volume"];
+    delete plannedPhaseData["Volume Label"];
     return (
       <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}
