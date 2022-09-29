@@ -119,13 +119,13 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
         <>
           <PatientTable className="my-4" data={patientData} />
           <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
-          <TreatmentPhaseTable className="my-4" data={treatmentPhaseData} />
+          <PlannedCourseTable className="my-4" data={plannedCourseData} />
           <PlannedTreatmentPhaseTable
             className="my-4"
             data={plannedTreatmentPhaseData}
           />
-          <PlannedCourseTable className="my-4" data={plannedCourseData} />
           <CourseSummaryTable className="my-4" data={courseSummaryData} />
+          <TreatmentPhaseTable className="my-4" data={treatmentPhaseData} />
         </>
       )}
     </>

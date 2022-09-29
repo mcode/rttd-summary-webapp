@@ -5,10 +5,12 @@ import EmptyDataTable from "../EmptyDataTable";
 
 function PlannedTreatmentPhaseTable({ data = [], className }) {
   if (_.isEmpty(data)) {
-    return <EmptyDataTable title="Planned Phase" className={className} />;
+    return (
+      <EmptyDataTable title="Planned Treatment Phase" className={className} />
+    );
   }
   return data.map((plannedPhase, i) => {
-    const title = `Planned Phase ${i + 1}`;
+    const title = `Planned Treatment Phase ${i + 1}`;
     // Compact so we don't make space for empty entries
     const numVolumes = _.compact(
       plannedPhase["Total Planned Dose [cGy]"]
