@@ -1,5 +1,6 @@
 import SimpleDataTable from "../SimpleDataTable";
 import MultiEntryDataTable from "../MultiEntryDataTable";
+import TwoColumnDataTable from "../TwoColumnDataTable";
 import EmptyDataTable from "../EmptyDataTable";
 import _ from "lodash";
 
@@ -23,6 +24,8 @@ function CourseSummaryTable({ data = [], className }) {
       });
     }
     const courseData = { ...courseSummary };
+    const modalityData = courseSummary["Modalities"];
+    delete courseData["Modalities"];
     delete courseData["Number of Delivered Fractions"];
     delete courseData["Total Delivered Dose [cGy]"];
     delete courseData["Volume Label"];
@@ -30,6 +33,14 @@ function CourseSummaryTable({ data = [], className }) {
       <div key={i} className={className}>
         {/* Display the base course data with a simple table */}
         <SimpleDataTable data={courseData} title={title} />
+        {/* Display Modality and Technique data with a two column table */}
+        {modalityData && modalityData.length > 0 && (
+          <TwoColumnDataTable
+            data={modalityData}
+            column1="Modality"
+            column2="Techniques"
+          />
+        )}
         {/* Display the volume data with the multi-entry table */}
         <MultiEntryDataTable
           dataArray={volumesData}

@@ -1,6 +1,7 @@
 import _ from "lodash";
 import SimpleDataTable from "../SimpleDataTable";
 import MultiEntryDataTable from "../MultiEntryDataTable";
+import TwoColumnDataTable from "../TwoColumnDataTable";
 import EmptyDataTable from "../EmptyDataTable";
 
 function TreatmentPhaseTable({ data = [], className }) {
@@ -22,12 +23,22 @@ function TreatmentPhaseTable({ data = [], className }) {
       });
     }
     const treatmentPhaseData = { ...treatmentPhase };
+    const modalityData = treatmentPhase["Modalities"];
+    delete treatmentPhaseData["Modalities"];
     delete treatmentPhaseData["Total Dose Delivered [cGy]"];
     delete treatmentPhaseData["Volume Label"];
     return (
       <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}
         <SimpleDataTable data={treatmentPhaseData} title={title} />
+        {/* Display Modality and Technique data with a two column table */}
+        {modalityData && modalityData.length > 0 && (
+          <TwoColumnDataTable
+            data={modalityData}
+            column1="Modality"
+            column2="Techniques"
+          />
+        )}
         {/* Display the volume data with the multi-entry table */}
         <MultiEntryDataTable
           dataArray={volumesData}

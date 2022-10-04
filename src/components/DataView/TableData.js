@@ -1,6 +1,6 @@
 import { dataDisplay } from "../../lib/dataDisplay";
 
-function TableData({ isFirstCol, data }) {
+function TableData({ isFirstCol, data, customStyles = {} }) {
   if (isFirstCol) {
     return (
       <th
@@ -9,6 +9,7 @@ function TableData({ isFirstCol, data }) {
         style={{
           wordBreak: "break-word",
           minWidth: "10rem",
+          ...customStyles,
         }}
       >
         {dataDisplay(data)}
@@ -21,6 +22,7 @@ function TableData({ isFirstCol, data }) {
         style={{
           wordBreak: "break-word",
           minWidth: "20rem",
+          ...customStyles,
         }}
       >
         {dataDisplay(data)}
