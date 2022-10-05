@@ -11,13 +11,28 @@ function TreatmentVolumeTable({ data = [], className }) {
       />
     );
   }
+  const volumeData = [];
+  const volumeMetadata = [];
+  data.forEach((x) => {
+    const { metadata, ...volume } = x;
+    volumeData.push(volume);
+    volumeMetadata.push(metadata);
+  });
   return (
-    <MultiEntryDataTable
-      dataArray={data}
-      className={className}
-      title="Radiotherapy Volumes (Targets)"
-      columnTitle="Volume"
-    />
+    <div className={className}>
+      <MultiEntryDataTable
+        dataArray={volumeData}
+        title="Radiotherapy Volumes (Targets)"
+        columnTitle="Volume"
+      />
+      {volumeMetadata ? (
+        <MultiEntryDataTable
+          dataArray={volumeMetadata}
+          title="Resource Metadata"
+          columnTitle="Volume"
+        />
+      ) : undefined}
+    </div>
   );
 }
 

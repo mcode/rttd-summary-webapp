@@ -26,6 +26,7 @@ function PlannedTreatmentPhaseTable({ data = [], className }) {
     delete plannedPhaseData["Planned Dose per Fraction [cGy]"];
     delete plannedPhaseData["Total Planned Dose [cGy]"];
     delete plannedPhaseData["Volume Label"];
+    delete plannedPhaseData.metadata;
     return (
       <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}
@@ -36,6 +37,12 @@ function PlannedTreatmentPhaseTable({ data = [], className }) {
           title="Planned Dose to Volumes"
           columnTitle="Dose to Volume"
         />
+        {plannedPhase.metadata ? (
+          <SimpleDataTable
+            data={plannedPhase.metadata}
+            title="Resource Metadata"
+          />
+        ) : undefined}
       </div>
     );
   });

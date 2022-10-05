@@ -26,6 +26,7 @@ function CourseSummaryTable({ data = [], className }) {
     delete courseData["Number of Delivered Fractions"];
     delete courseData["Total Delivered Dose [cGy]"];
     delete courseData["Volume Label"];
+    delete courseData.metadata;
     return (
       <div key={i} className={className}>
         {/* Display the base course data with a simple table */}
@@ -36,6 +37,12 @@ function CourseSummaryTable({ data = [], className }) {
           title="Dose Delivered to Volumes"
           columnTitle="Dose to Volume"
         />
+        {courseSummary.metadata ? (
+          <SimpleDataTable
+            data={courseSummary.metadata}
+            title="Resource Metadata"
+          />
+        ) : undefined}
       </div>
     );
   });
