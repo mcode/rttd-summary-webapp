@@ -41,6 +41,7 @@ function App() {
   ]);
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
+  const [includeMetadata, setIncludeMetadata] = useState(false);
   const [patientQueries, setPatientQueries] = useState([
     {
       id: "Patient-XRTS-01-22A",
@@ -102,6 +103,10 @@ function App() {
     setShowHeaderForm(true);
   }
 
+  function toggleMetadata() {
+    setIncludeMetadata(!includeMetadata);
+  }
+
   function createHeaderObj() {
     const headerObj = {};
     requestHeaders.forEach(([key, value]) => {
@@ -142,12 +147,12 @@ function App() {
         headerObj
       );
       resourceMap.set(patient.id, [
-        mapPatient(patient),
-        mapTreatedPhase(procedures),
-        mapCourseSummary(procedures),
-        mapVolumes(volumes),
-        mapPlannedCourses(serviceRequests),
-        mapPlannedTreatmentPhases(serviceRequests),
+        mapPatient(patient, includeMetadata),
+        mapTreatedPhase(procedures, includeMetadata),
+        mapCourseSummary(procedures, includeMetadata),
+        mapVolumes(volumes, includeMetadata),
+        mapPlannedCourses(serviceRequests, includeMetadata),
+        mapPlannedTreatmentPhases(serviceRequests, includeMetadata),
       ]);
     }
     setSearchedPatientIds(patientResources.map((patient) => patient.id));
@@ -214,6 +219,10 @@ function App() {
               Please create a patient query
             </p>
           )}
+          <div key="metadata" className="space-x-1">
+            <input type="checkbox" onChange={toggleMetadata} />
+            <label>Include Metadata?</label>
+          </div>
           <button
             className="my-4 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-200 cursor-pointer disabled:cursor-not-allowed transition-all shadow-lg active:shadow "
             onClick={async (e) => {

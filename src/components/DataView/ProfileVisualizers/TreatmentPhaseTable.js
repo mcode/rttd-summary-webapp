@@ -24,6 +24,7 @@ function TreatmentPhaseTable({ data = [], className }) {
     const treatmentPhaseData = { ...treatmentPhase };
     delete treatmentPhaseData["Total Dose Delivered [cGy]"];
     delete treatmentPhaseData["Volume Label"];
+    delete treatmentPhaseData.metadata;
     return (
       <div className={className} key={i}>
         {/* Display the base phase data with a simple table */}
@@ -34,6 +35,12 @@ function TreatmentPhaseTable({ data = [], className }) {
           title="Dose Delivered to Volumes"
           columnTitle="Dose to Volume"
         />
+        {treatmentPhase.metadata ? (
+          <SimpleDataTable
+            data={treatmentPhase.metadata}
+            title="Resource Metadata"
+          />
+        ) : undefined}
       </div>
     );
   });
