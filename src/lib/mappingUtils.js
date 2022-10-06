@@ -15,13 +15,13 @@ function getModalities(resource, resourceType) {
 
   return extensions.map((extension) => {
     return {
-      Modality: extension.extension.find(
+      Modality: extension.extension?.find(
         (extension) =>
           extension.url ===
           "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality"
-      ).valueCodeableConcept.coding[0].display,
+      )?.valueCodeableConcept?.coding[0]?.display,
       Techniques: extension.extension
-        .filter(
+        ?.filter(
           (extension) =>
             extension.url ===
             "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique"
