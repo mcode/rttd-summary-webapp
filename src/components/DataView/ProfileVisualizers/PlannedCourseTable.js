@@ -29,6 +29,8 @@ function PlannedCourseTable({ data = [], className }) {
     delete plannedCourseData["Total Planned Dose [cGy]"];
     delete plannedCourseData["Volume Label"];
     delete plannedCourseData["Modalities"];
+    delete plannedCourseData.metadata;
+
     return (
       <div key={i} className={className}>
         {/* Display the base course data with a simple table */}
@@ -47,6 +49,12 @@ function PlannedCourseTable({ data = [], className }) {
           title="Planned Dose to Volumes"
           columnTitle="Dose to Volume"
         />
+        {plannedCourse.metadata ? (
+          <SimpleDataTable
+            data={plannedCourse.metadata}
+            title="Resource Metadata"
+          />
+        ) : undefined}
       </div>
     );
   });

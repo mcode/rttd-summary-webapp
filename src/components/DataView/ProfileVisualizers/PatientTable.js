@@ -6,12 +6,14 @@ function PatientTable({ data = {}, className }) {
   if (_.isEmpty(data)) {
     return <EmptyDataTable title="Patient Information" className={className} />;
   }
+  const { metadata, ...patientData } = data;
   return (
-    <SimpleDataTable
-      data={data}
-      className={className}
-      title="Patient Information"
-    />
+    <div className={className}>
+      <SimpleDataTable data={patientData} title="Patient Information" />
+      {metadata ? (
+        <SimpleDataTable data={metadata} title="Resource Metadata" />
+      ) : undefined}
+    </div>
   );
 }
 

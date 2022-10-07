@@ -73,7 +73,10 @@ function mapPatient(patient, includeMetadata = true) {
   output["Date of Birth"] = patient?.birthDate;
   output["Administrative Gender"] = patient?.gender;
   output["Birth Sex"] = "N/A"; //patient?.extension[0].valueCode;
-  return { ...output, ...(includeMetadata ? getMetadata(patient) : {}) };
+  return {
+    ...output,
+    ...(includeMetadata ? { metadata: getMetadata(patient) } : {}),
+  };
 }
 
 /**
@@ -118,7 +121,7 @@ function mapCourseSummary(procedure, includeMetadata = true) {
     output["Body Sites"] = getBodySites(summary, "Procedure");
     outputs.push({
       ...output,
-      ...(includeMetadata ? getMetadata(summary) : {}),
+      ...(includeMetadata ? { metadata: getMetadata(summary) } : {}),
     });
   });
   return outputs;
@@ -155,7 +158,10 @@ function mapTreatedPhase(procedure, includeMetadata = true) {
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-dose-delivered-to-volume').extension.where(url = 'volume').valueReference.display"
     );
     output["Body Sites"] = getBodySites(phase, "Procedure");
-    outputs.push({ ...output, ...(includeMetadata ? getMetadata(phase) : {}) });
+    outputs.push({
+      ...output,
+      ...(includeMetadata ? { metadata: getMetadata(phase) } : {}),
+    });
   });
   return outputs;
 }
@@ -199,7 +205,7 @@ function mapPlannedTreatmentPhases(serviceRequests, includeMetadata = true) {
     output["Body Sites"] = getBodySites(plannedPhase, "ServiceRequest");
     outputs.push({
       ...output,
-      ...(includeMetadata ? getMetadata(plannedPhase) : {}),
+      ...(includeMetadata ? { metadata: getMetadata(plannedPhase) } : {}),
     });
   });
   return outputs;
@@ -253,7 +259,7 @@ function mapPlannedCourses(serviceRequests, includeMetadata = true) {
 
     outputs.push({
       ...output,
-      ...(includeMetadata ? getMetadata(plannedCourse) : {}),
+      ...(includeMetadata ? { metadata: getMetadata(plannedCourse) } : {}),
     });
   });
   return outputs;
@@ -279,7 +285,7 @@ function mapVolumes(volumes, includeMetadata = true) {
       volume?.locationQualifier?.[0]?.coding?.[0]?.display ?? undefined;
     outputs.push({
       ...output,
-      ...(includeMetadata ? getMetadata(volume) : {}),
+      ...(includeMetadata ? { metadata: getMetadata(volume) } : {}),
     });
   });
   return outputs;
