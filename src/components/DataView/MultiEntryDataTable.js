@@ -8,11 +8,12 @@ function MultiEntryDataTable({
   title,
   columnTitle,
   className,
+  additionalHeader = "",
 }) {
   const exampleInstance = dataArray.length > 0 && dataArray[0];
   const keys =
     exampleInstance &&
-    Object.keys(exampleInstance).filter((key) => key !== "Volume Label");
+    Object.keys(exampleInstance).filter((key) => key !== additionalHeader);
   //  Each row is the key followed by all the values it follows.
   const rows = keys
     ? keys.map((k, i) => {
@@ -33,7 +34,9 @@ function MultiEntryDataTable({
               return (
                 <TableHeader
                   key={i}
-                  text={`${columnTitle} ${i + 1} (${instance["Volume Label"]})`}
+                  text={`${columnTitle} ${i + 1}${
+                    additionalHeader ? ` (${instance[additionalHeader]})` : ""
+                  }`}
                 />
               );
             })}

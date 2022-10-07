@@ -48,6 +48,7 @@ function PlannedCourseTable({ data = [], className }) {
           dataArray={volumesData}
           title="Planned Dose to Volumes"
           columnTitle="Dose to Volume"
+          additionalHeader="Volume Label"
         />
         {plannedCourse.metadata ? (
           <SimpleDataTable

@@ -16,7 +16,7 @@ function TreatmentVolumeTable({ data = [], className }) {
   data.forEach((x) => {
     const { metadata, ...volume } = x;
     volumeData.push(volume);
-    volumeMetadata.push(metadata);
+    metadata && volumeMetadata.push(metadata);
   });
   return (
     <div className={className}>
@@ -24,8 +24,9 @@ function TreatmentVolumeTable({ data = [], className }) {
         dataArray={volumeData}
         title="Radiotherapy Volumes (Targets)"
         columnTitle="Volume"
+        additionalHeader="Volume Label"
       />
-      {volumeMetadata ? (
+      {volumeMetadata && volumeMetadata.length > 0 ? (
         <MultiEntryDataTable
           dataArray={volumeMetadata}
           title="Resource Metadata"

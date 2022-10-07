@@ -45,6 +45,7 @@ function TreatmentPhaseTable({ data = [], className }) {
           dataArray={volumesData}
           title="Dose Delivered to Volumes"
           columnTitle="Dose to Volume"
+          additionalHeader="Volume Label"
         />
         {treatmentPhase.metadata ? (
           <SimpleDataTable

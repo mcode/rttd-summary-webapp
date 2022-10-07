@@ -49,6 +49,7 @@ function PlannedTreatmentPhaseTable({ data = [], className }) {
           dataArray={volumesData}
           title="Planned Dose to Volumes"
           columnTitle="Dose to Volume"
+          additionalHeader="Volume Label"
         />
         {plannedPhase.metadata ? (
           <SimpleDataTable
