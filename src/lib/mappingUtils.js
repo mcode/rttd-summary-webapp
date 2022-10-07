@@ -8,20 +8,30 @@ function getProcedureIntent(resource, resourceType) {
   )[0];
 }
 function getModalities(resource, resourceType) {
-  return fhirpath
-    .evaluate(
-      resource,
-      `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality').valueCodeableConcept.coding.display`
-    )
-    .join("\n");
-}
-function getTechniques(resource, resourceType) {
-  return fhirpath
-    .evaluate(
-      resource,
-      `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique').extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique').valueCodeableConcept.coding.display`
-    )
-    .join("\n");
+  const extensions = fhirpath.evaluate(
+    resource,
+    `${resourceType}.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality-and-technique')`
+  );
+
+  return extensions.map((extension) => {
+    return {
+      Modality: extension.extension?.find(
+        (extension) =>
+          extension.url ===
+          "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-modality"
+      )?.valueCodeableConcept?.coding[0]?.display,
+      Techniques: extension.extension
+        ?.filter(
+          (extension) =>
+            extension.url ===
+            "http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-technique"
+        )
+        .map((techniqueObj) => {
+          return techniqueObj.valueCodeableConcept.coding[0].display;
+        })
+        .join("\n"),
+    };
+  });
 }
 function getBodySites(resource, resourceType) {
   return fhirpath.evaluate(resource, `${resourceType}.bodySite.coding.display`);
@@ -92,7 +102,6 @@ function mapCourseSummary(procedure, includeMetadata = true) {
     output["Start Date"] = summary?.performedPeriod?.start;
     output["End Date"] = summary?.performedPeriod?.end;
     output["Modalities"] = getModalities(summary, "Procedure");
-    output["Techniques"] = getTechniques(summary, "Procedure");
     output["Number of Sessions"] = fhirpath.evaluate(
       summary,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/mcode/StructureDefinition/mcode-radiotherapy-sessions').valueUnsignedInt"
@@ -136,7 +145,6 @@ function mapTreatedPhase(procedure, includeMetadata = true) {
     output["Start Date"] = phase?.performedPeriod?.start;
     output["End Date"] = phase?.performedPeriod?.end;
     output["Modalities"] = getModalities(phase, "Procedure");
-    output["Techniques"] = getTechniques(phase, "Procedure");
     output["Number of Fractions Delivered"] = fhirpath.evaluate(
       phase,
       "Procedure.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-delivered').valueUnsignedInt"
@@ -178,7 +186,6 @@ function mapPlannedTreatmentPhases(serviceRequests, includeMetadata = true) {
     output["Request Intent"] = plannedPhase?.intent;
     // IG states there will be at most one procedure intent
     output["Modalities"] = getModalities(plannedPhase, "ServiceRequest");
-    output["Techniques"] = getTechniques(plannedPhase, "ServiceRequest");
     output["Planned Number of Fractions"] = fhirpath.evaluate(
       plannedPhase,
       "ServiceRequest.extension.where(url = 'http://hl7.org/fhir/us/codex-radiation-therapy/StructureDefinition/codexrt-radiotherapy-fractions-planned').valuePositiveInt"
@@ -228,8 +235,6 @@ function mapPlannedCourses(serviceRequests, includeMetadata = true) {
     );
     // One display value should suffice
     output["Modalities"] = getModalities(plannedCourse, "ServiceRequest");
-    // One display value should suffice
-    output["Techniques"] = getTechniques(plannedCourse, "ServiceRequest");
     // IG states there will be at most one value for # sessions
     output["Number of Sessions"] = fhirpath.evaluate(
       plannedCourse,
