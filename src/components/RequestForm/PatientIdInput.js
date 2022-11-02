@@ -11,7 +11,7 @@ function PatientIdInput({ currentPatientQuery, setCurrentPatientQuery }) {
   return (
     <div id="patient-ids-section" className="mb-4">
       <label className="text-lg m-1" htmlFor="patientIds">
-        Patient ID
+        Patient FHIR Resource ID
       </label>
       <div id="id-input-row" className="flex rounded-t-lg mb-4 justify-center">
         <input
