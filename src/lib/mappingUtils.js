@@ -40,7 +40,7 @@ function getIdentifiers(patient) {
   const identifiers = [];
   patient?.identifier?.forEach((identifier) => {
     const idType = identifier.type?.coding?.[0].display;
-    const idSystem = identifier.type?.coding?.[0].system;
+    const idSystem = identifier.system;
     const idValue = identifier.value;
     if (idType) {
       identifiers.push(`${idType}: ${idValue}`);
