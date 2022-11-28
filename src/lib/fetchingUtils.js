@@ -77,9 +77,12 @@ function generateQueryUrl(serverUrl, queryObj) {
  */
 async function fetchProcedures(serverUrl, patientId, requestHeaders) {
   const procedureResources = await axios
-    .get(`${serverUrl}/Procedure?subject:Patient=${patientId}`, {
-      headers: requestHeaders,
-    })
+    .get(
+      `${serverUrl}/Procedure?subject:Patient=${patientId}&category=http://snomed.info/sct|108290001`,
+      {
+        headers: requestHeaders,
+      }
+    )
     .then((res) => res.data)
     .catch((e) => {
       console.error(e);
@@ -117,9 +120,12 @@ async function fetchVolumes(serverUrl, patientId, requestHeaders) {
  */
 async function fetchServiceRequests(serverUrl, patientId, requestHeaders) {
   const serviceRequests = await axios
-    .get(`${serverUrl}/ServiceRequest?subject:Patient=${patientId}`, {
-      headers: requestHeaders,
-    })
+    .get(
+      `${serverUrl}/ServiceRequest?subject:Patient=${patientId}&category=http://snomed.info/sct|108290001`,
+      {
+        headers: requestHeaders,
+      }
+    )
     .then((res) => res.data)
     .catch((e) => {
       console.error(e);
