@@ -78,7 +78,7 @@ function generateQueryUrl(serverUrl, queryObj) {
 async function fetchProcedures(serverUrl, patientId, requestHeaders) {
   const procedureResources = await axios
     .get(
-      `${serverUrl}/Procedure?subject:Patient=${patientId}&category=http://snomed.info/sct|108290001`,
+      `${serverUrl}/Procedure?subject:Patient=${patientId}&category=http://snomed.info/sct%7c108290001`,
       {
         headers: requestHeaders,
       }
@@ -121,7 +121,7 @@ async function fetchVolumes(serverUrl, patientId, requestHeaders) {
 async function fetchServiceRequests(serverUrl, patientId, requestHeaders) {
   const serviceRequests = await axios
     .get(
-      `${serverUrl}/ServiceRequest?subject:Patient=${patientId}&category=http://snomed.info/sct|108290001`,
+      `${serverUrl}/ServiceRequest?subject:Patient=${patientId}&category=http://snomed.info/sct%7c108290001`,
       {
         headers: requestHeaders,
       }
