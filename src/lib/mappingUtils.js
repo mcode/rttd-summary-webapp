@@ -85,7 +85,7 @@ function mapPatient(patient, includeMetadata = true) {
 function mapCourseSummary(procedure, includeMetadata = true) {
   const summaries = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33529' | '12171230037')).resource"
+    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33529' | '1217123003')).resource"
   );
   const outputs = [];
   summaries.forEach((summary) => {
@@ -219,7 +219,7 @@ function mapPlannedTreatmentPhases(serviceRequests, includeMetadata = true) {
 function mapPlannedCourses(serviceRequests, includeMetadata = true) {
   const plannedCourses = fhirpath.evaluate(
     serviceRequests,
-    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33529' |  '12171230037' )).resource"
+    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33529' |  '1217123003' )).resource"
   );
   const outputs = [];
   plannedCourses.forEach((plannedCourse) => {
