@@ -42,13 +42,11 @@ function getIdentifiers(patient) {
     const idType = identifier.type?.coding?.[0].display;
     const idSystem = identifier.system;
     const idValue = identifier.value;
-    if (idType) {
-      identifiers.push(`${idType}: ${idValue}`);
-    } else if (idSystem) {
-      identifiers.push(`${idValue} (System: ${idSystem})`);
-    } else {
-      identifiers.push(`${idValue} (No system provided)`);
-    }
+    identifiers.push(
+      `${idType ?? "No Type"} : ${idSystem ?? "No System"} : ${
+        idValue ?? "No Value"
+      }`
+    );
   });
   return identifiers.join(", ");
 }
@@ -87,12 +85,13 @@ function mapPatient(patient, includeMetadata = true) {
 function mapCourseSummary(procedure, includeMetadata = true) {
   const summaries = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
+    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33529' | '1217123003')).resource"
   );
   const outputs = [];
   summaries.forEach((summary) => {
     const output = {};
-    output["Course Label"] = summary?.identifier?.[0]?.value ?? "N/A";
+    const courseIdentifier = getUsualIdentifier(summary)[0];
+    output["Course Label"] = courseIdentifier?.value ?? "N/A";
     output["Diagnosis"] = fhirpath.evaluate(
       summary,
       "Procedure.reasonCode.coding.display"
@@ -135,7 +134,7 @@ function mapCourseSummary(procedure, includeMetadata = true) {
 function mapTreatedPhase(procedure, includeMetadata = true) {
   const phases = fhirpath.evaluate(
     procedure,
-    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
+    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33527' | '1222565005')).resource"
   );
   const outputs = [];
   phases.forEach((phase) => {
@@ -175,7 +174,7 @@ function mapTreatedPhase(procedure, includeMetadata = true) {
 function mapPlannedTreatmentPhases(serviceRequests, includeMetadata = true) {
   const plannedPhases = fhirpath.evaluate(
     serviceRequests,
-    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33527').resource"
+    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33527' | '1222565005')).resource"
   );
   const outputs = [];
   plannedPhases.forEach((plannedPhase) => {
@@ -220,12 +219,13 @@ function mapPlannedTreatmentPhases(serviceRequests, includeMetadata = true) {
 function mapPlannedCourses(serviceRequests, includeMetadata = true) {
   const plannedCourses = fhirpath.evaluate(
     serviceRequests,
-    "Bundle.entry.where(resource.code.coding.code = 'USCRS-33529').resource"
+    "Bundle.entry.where(resource.code.coding.code in ('USCRS-33529' |  '1217123003' )).resource"
   );
   const outputs = [];
   plannedCourses.forEach((plannedCourse) => {
     const output = {};
-    output["Course Label"] = plannedCourse?.identifier?.[0]?.value && "N/A";
+    const courseIdentifier = getUsualIdentifier(plannedCourse)[0];
+    output["Course Label"] = courseIdentifier?.value ?? "N/A";
     output["Course Status"] = plannedCourse?.status;
     output["Request Intent"] = plannedCourse?.intent;
     // IG states there will be at most one procedure intent
@@ -291,6 +291,14 @@ function mapVolumes(volumes, includeMetadata = true) {
   return outputs;
 }
 
+/**
+ *  Return the identifier of an object where the use attribute is == to 'usual'
+ * @param {Object} obj the object to evaluate against
+ * @returns {Object[] } an array of identifiers
+ */
+function getUsualIdentifier(obj) {
+  return fhirpath.evaluate(obj, "identifier.where(use='usual')");
+}
 export {
   mapPatient,
   mapCourseSummary,
