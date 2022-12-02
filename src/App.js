@@ -45,6 +45,8 @@ function App() {
   const [patientQueries, setPatientQueries] = useState([
     {
       id: "Patient-XRTS-01-22A",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -52,6 +54,8 @@ function App() {
     },
     {
       id: "Patient-XRTS-02-22A",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -59,6 +63,8 @@ function App() {
     },
     {
       id: "Patient-XRTS-03-22A",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -66,6 +72,8 @@ function App() {
     },
     {
       id: "Patient-XRTS-04-22A",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -73,6 +81,8 @@ function App() {
     },
     {
       id: "Patient-XRTS-05-22A",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -80,6 +90,8 @@ function App() {
     },
     {
       id: "Patient-XRTS-01",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",
@@ -87,6 +99,8 @@ function App() {
     },
     {
       id: "Patient-XRTS-02",
+      identifier: "",
+      system: "",
       givenName: "",
       familyName: "",
       birthDate: "",

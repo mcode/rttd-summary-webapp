@@ -49,6 +49,18 @@ function generateQueryUrl(serverUrl, queryObj) {
       case "id":
         urlStr += `${seperator}_id=${queryObj[param]}`;
         break;
+      case "identifier":
+        if (queryObj.system) {
+          urlStr += `${seperator}identifier=${queryObj.system}%7C${queryObj[param]}`;
+        } else {
+          urlStr += `${seperator}identifier=${queryObj[param]}`;
+        }
+        break;
+      case "system":
+        if (!queryObj.identifier) {
+          urlStr += `${seperator}identifier=${queryObj[param]}%7C`;
+        }
+        break;
       case "givenName":
         urlStr += `${seperator}given:exact=${queryObj[param]}`;
         break;
