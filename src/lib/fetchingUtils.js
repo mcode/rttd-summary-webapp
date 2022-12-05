@@ -42,6 +42,8 @@ function generateQueryUrl(serverUrl, queryObj) {
 
   if (queryParams.length === 0) return;
 
+  // We only want to add the identifier once, but two input parameters could add it (identifier & system)
+  // This flag to ensure we don't add a duplicate query-param to our string. 
   let identifierPresent = false;
   queryParams.forEach((param, idx) => {
     const seperator = idx === 0 ? "?" : "&";
