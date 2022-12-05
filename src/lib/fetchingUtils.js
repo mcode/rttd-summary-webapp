@@ -42,6 +42,7 @@ function generateQueryUrl(serverUrl, queryObj) {
 
   if (queryParams.length === 0) return;
 
+  let identifierPresent = false;
   queryParams.forEach((param, idx) => {
     const seperator = idx === 0 ? "?" : "&";
 
@@ -50,15 +51,23 @@ function generateQueryUrl(serverUrl, queryObj) {
         urlStr += `${seperator}_id=${queryObj[param]}`;
         break;
       case "identifier":
-        if (queryObj.system) {
-          urlStr += `${seperator}identifier=${queryObj.system}%7C${queryObj[param]}`;
-        } else {
-          urlStr += `${seperator}identifier=${queryObj[param]}`;
+        if (!identifierPresent) {
+          if (queryObj.system) {
+            urlStr += `${seperator}identifier=${queryObj.system}%7C${queryObj[param]}`;
+          } else {
+            urlStr += `${seperator}identifier=${queryObj[param]}`;
+          }
+          identifierPresent = true;
         }
         break;
       case "system":
-        if (!queryObj.identifier) {
-          urlStr += `${seperator}identifier=${queryObj[param]}%7C`;
+        if (!identifierPresent) {
+          if (!queryObj.identifier) {
+            urlStr += `${seperator}identifier=${queryObj[param]}%7C`;
+          } else {
+            urlStr += `${seperator}identifier=${queryObj[param]}%7C${queryObj.identifier}`;
+          }
+          identifierPresent = true;
         }
         break;
       case "givenName":
