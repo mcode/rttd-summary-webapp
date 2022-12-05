@@ -25,6 +25,16 @@ function PatientQueryList({
     if (queryObj.id) {
       displayStr += `id: ${queryObj.id}`;
     }
+    if (queryObj.identifier) {
+      displayStr += `${displayStr ? "; " : ""}identifier: ${
+        queryObj.identifier
+      }`;
+    }
+    if (queryObj.system) {
+      displayStr += `${displayStr ? "; " : ""}identifier system: ${
+        queryObj.system
+      }`;
+    }
     if (queryObj.givenName) {
       displayStr += `${displayStr ? "; " : ""}givenName: ${queryObj.givenName}`;
     }

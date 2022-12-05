@@ -42,12 +42,35 @@ function generateQueryUrl(serverUrl, queryObj) {
 
   if (queryParams.length === 0) return;
 
+  // We only want to add the identifier once, but two input parameters could add it (identifier & system)
+  // This flag to ensure we don't add a duplicate query-param to our string. 
+  let identifierPresent = false;
   queryParams.forEach((param, idx) => {
     const seperator = idx === 0 ? "?" : "&";
 
     switch (param) {
       case "id":
         urlStr += `${seperator}_id=${queryObj[param]}`;
+        break;
+      case "identifier":
+        if (!identifierPresent) {
+          if (queryObj.system) {
+            urlStr += `${seperator}identifier=${queryObj.system}%7C${queryObj[param]}`;
+          } else {
+            urlStr += `${seperator}identifier=${queryObj[param]}`;
+          }
+          identifierPresent = true;
+        }
+        break;
+      case "system":
+        if (!identifierPresent) {
+          if (!queryObj.identifier) {
+            urlStr += `${seperator}identifier=${queryObj[param]}%7C`;
+          } else {
+            urlStr += `${seperator}identifier=${queryObj[param]}%7C${queryObj.identifier}`;
+          }
+          identifierPresent = true;
+        }
         break;
       case "givenName":
         urlStr += `${seperator}given:exact=${queryObj[param]}`;
