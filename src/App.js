@@ -39,6 +39,78 @@ function App() {
     ]
   );
   const [serverUrl, setServerUrl] = useLocalStorage("serverUrl", BASE_URL);
+  const [patientQueries, setPatientQueries] = useLocalStorage(
+    "patientQueries",
+    [
+      {
+        id: "Patient-XRTS-01-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-02-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-03-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-04-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-05-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-01",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-02",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+    ]
+  );
+  const [includeMetadata, setIncludeMetadata] = useLocalStorage(
+    "includeMetadata",
+    false
+  );
   // Regular useState
   const [loading, setLoading] = useState(false);
   const [resourceMap, setResourceMap] = useState(new Map());
@@ -47,72 +119,6 @@ function App() {
   const [showHeaderForm, setShowHeaderForm] = useState(false);
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
-  const [includeMetadata, setIncludeMetadata] = useState(false);
-  const [patientQueries, setPatientQueries] = useState([
-    {
-      id: "Patient-XRTS-01-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-02-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-03-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-04-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-05-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-01",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-02",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-  ]);
 
   function openRequestForm(queryIndex) {
     setCurrentPatientQueryIdx(queryIndex);
