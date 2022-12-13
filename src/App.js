@@ -24,21 +24,27 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import RequestForm from "./components/RequestForm/RequestForm";
 import HeaderForm from "./components/HeaderForm/HeaderForm";
 import RequestHeadersList from "./components/HeaderForm/RequestHeadersList";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 const BASE_URL = "https://api.logicahealth.org/RTTD/open";
 
 function App() {
+  // Local storage driven data
+  const [requestHeaders, setRequestHeaders] = useLocalStorage(
+    "requestHeaders",
+    [
+      ["", ""],
+      ["", ""],
+      ["", ""],
+    ]
+  );
+  const [serverUrl, setServerUrl] = useLocalStorage("serverUrl", BASE_URL);
+  // Regular useState
   const [loading, setLoading] = useState(false);
-  const [serverUrl, setServerUrl] = useState(BASE_URL);
   const [resourceMap, setResourceMap] = useState(new Map());
   const [searchedPatientIds, setSearchedPatientIds] = useState([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showHeaderForm, setShowHeaderForm] = useState(false);
-  const [requestHeaders, setRequestHeaders] = useState([
-    ["", ""],
-    ["", ""],
-    ["", ""],
-  ]);
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
   const [includeMetadata, setIncludeMetadata] = useState(false);
