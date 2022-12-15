@@ -246,8 +246,13 @@ function App() {
             </p>
           )}
           <div key="metadata" className="space-x-1">
-            <input type="checkbox" onChange={toggleMetadata} />
-            <label>Include Metadata?</label>
+            <input
+              id="metadata-toggle"
+              type="checkbox"
+              checked={includeMetadata}
+              onChange={toggleMetadata}
+            />
+            <label htmlFor="metadata-toggle">Include Metadata?</label>
           </div>
           <button
             className="my-4 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-200 cursor-pointer disabled:cursor-not-allowed transition-all shadow-lg active:shadow "
