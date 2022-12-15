@@ -24,89 +24,101 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import RequestForm from "./components/RequestForm/RequestForm";
 import HeaderForm from "./components/HeaderForm/HeaderForm";
 import RequestHeadersList from "./components/HeaderForm/RequestHeadersList";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 const BASE_URL = "https://api.logicahealth.org/RTTD/open";
 
 function App() {
+  // Local storage driven data
+  const [requestHeaders, setRequestHeaders] = useLocalStorage(
+    "requestHeaders",
+    [
+      ["", ""],
+      ["", ""],
+      ["", ""],
+    ]
+  );
+  const [serverUrl, setServerUrl] = useLocalStorage("serverUrl", BASE_URL);
+  const [patientQueries, setPatientQueries] = useLocalStorage(
+    "patientQueries",
+    [
+      {
+        id: "Patient-XRTS-01-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-02-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-03-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-04-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-05-22A",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-01",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+      {
+        id: "Patient-XRTS-02",
+        identifier: "",
+        system: "",
+        givenName: "",
+        familyName: "",
+        birthDate: "",
+        gender: "",
+      },
+    ]
+  );
+  const [includeMetadata, setIncludeMetadata] = useLocalStorage(
+    "includeMetadata",
+    false
+  );
+  // Regular useState
   const [loading, setLoading] = useState(false);
-  const [serverUrl, setServerUrl] = useState(BASE_URL);
   const [resourceMap, setResourceMap] = useState(new Map());
   const [searchedPatientIds, setSearchedPatientIds] = useState([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showHeaderForm, setShowHeaderForm] = useState(false);
-  const [requestHeaders, setRequestHeaders] = useState([
-    ["", ""],
-    ["", ""],
-    ["", ""],
-  ]);
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
-  const [includeMetadata, setIncludeMetadata] = useState(false);
-  const [patientQueries, setPatientQueries] = useState([
-    {
-      id: "Patient-XRTS-01-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-02-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-03-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-04-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-05-22A",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-01",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-    {
-      id: "Patient-XRTS-02",
-      identifier: "",
-      system: "",
-      givenName: "",
-      familyName: "",
-      birthDate: "",
-      gender: "",
-    },
-  ]);
 
   function openRequestForm(queryIndex) {
     setCurrentPatientQueryIdx(queryIndex);
@@ -234,8 +246,13 @@ function App() {
             </p>
           )}
           <div key="metadata" className="space-x-1">
-            <input type="checkbox" onChange={toggleMetadata} />
-            <label>Include Metadata?</label>
+            <input
+              id="metadata-toggle"
+              type="checkbox"
+              checked={includeMetadata}
+              onChange={toggleMetadata}
+            />
+            <label htmlFor="metadata-toggle">Include Metadata?</label>
           </div>
           <button
             className="my-4 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-200 cursor-pointer disabled:cursor-not-allowed transition-all shadow-lg active:shadow "

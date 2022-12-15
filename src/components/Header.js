@@ -6,7 +6,7 @@ function Header() {
         <p className="text-white text-lg md:text-2xl ">
           Radiation Therapy Treatment Data Summary
         </p>
-        <img className="w-64 h-16" src={logo} alt="logo" />
+        <img className="w-32 h-8 md:w-48 md:h-12" src={logo} alt="logo" />
       </header>
     </div>
   );
