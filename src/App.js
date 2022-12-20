@@ -14,13 +14,13 @@ function App() {
   return (
     <>
       <Header />
-      <div className="container grid grid-cols-4 sm:mx-auto px-4 sm:px-0 mt-4">
+      <div className="w-full px-4 md:px-8 grid grid-cols-4 mt-4">
         <RequestConfigurationPanel
           setResourceMap={setResourceMap}
           setSearchedPatientIds={setSearchedPatientIds}
           setLoading={setLoading}
         />
-        <div className="col-span-4 sm:col-span-3 ml-0 sm:ml-2">
+        <div className="col-span-4 md:col-span-3 ml-0 md:ml-2">
           {loading && <LoadingAnimation />}
 
           {resourceMap && (
