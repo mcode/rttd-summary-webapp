@@ -3,7 +3,7 @@ import PatientIdInput from "./PatientIdInput";
 import NameInput from "./NameInput";
 import GenderInput from "./GenderInput";
 
-function RequestForm({
+function PatientQueryForm({
   currentPatientQuery,
   setCurrentPatientQuery,
   patientQueries,
@@ -107,4 +107,4 @@ function RequestForm({
   );
 }
 
-export default RequestForm;
+export default PatientQueryForm;

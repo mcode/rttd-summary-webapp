@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Trash, Plus } from "react-feather";
 
-function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
+function RequestHeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
   const [editedRequestHeaders, setEditedRequestHeaders] = useState([
     ...requestHeaders,
   ]);
@@ -154,4 +154,4 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
   );
 }
 
-export default HeaderForm;
+export default RequestHeaderForm;
