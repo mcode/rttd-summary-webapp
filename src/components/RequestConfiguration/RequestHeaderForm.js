@@ -83,7 +83,7 @@ function RequestHeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
                 addHeader();
               }}
             >
-              <Plus className="inline" size={24}></Plus>
+              <Plus className="inline" size={20}></Plus>
             </button>
           </div>
           <hr></hr>
@@ -118,7 +118,7 @@ function RequestHeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
                         removeHeader(idx);
                       }}
                     >
-                      <Trash className="inline" size={20} />
+                      <Trash className="inline" size={16} />
                     </button>
                   </Fragment>
                 );

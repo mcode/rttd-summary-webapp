@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { useState } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Download, Plus, Upload } from "react-feather";
 // utils
 import {
@@ -25,6 +26,8 @@ import PatientQueryForm from "./PatientQueryForm";
 import PatientQueryList from "./PatientQueryList";
 import RequestHeaderForm from "./RequestHeaderForm";
 import RequestHeadersList from "./RequestHeadersList";
+import BasicButton from "../BasicButton";
+import SuccessAlert from "../SuccessAlert";
 
 // GLOBALS
 const BASE_URL = "https://api.logicahealth.org/RTTD/open";
@@ -34,11 +37,13 @@ export default function RequestConfigurationPanel({
   setSearchedPatientIds,
   setLoading,
 }) {
+  const [alertContainer] = useAutoAnimate();
   // Basic state
   const [showPatientQueryForm, setShowPatientQueryForm] = useState(false);
   const [showRequestHeaderForm, setShowRequestHeaderForm] = useState(false);
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
+  const [alert, setAlert] = useState();
   // Local storage driven data
   const [requestHeaders, setRequestHeaders] = useLocalStorage(
     "requestHeaders",
@@ -187,87 +192,158 @@ export default function RequestConfigurationPanel({
     setResourceMap(resourceMap);
   }
 
-  async function uploadConfiguration() {}
+  function fadingAlert(msg) {
+    setAlert(msg);
+    setTimeout(() => {
+      setAlert(undefined);
+    }, 6000);
+  }
 
-  async function downloadConfiguration() {}
+  function parseConfigSetState(configData, fileName) {
+    const config = JSON.parse(configData);
+    console.log(config);
+    setRequestHeaders(config.requestHeaders);
+    setServerUrl(config.serverUrl);
+    setPatientQueries(config.patientQueries);
+    setIncludeMetadata(config.includeMetadata);
+    fadingAlert(`Loaded config '${fileName}'`);
+  }
+
+  function loadFile(file) {
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => parseConfigSetState(e.target.result, file.name);
+    fileReader.readAsText(file);
+  }
+
+  async function downloadConfiguration(e) {
+    e.preventDefault();
+    const data = {
+      requestHeaders,
+      serverUrl,
+      patientQueries,
+      includeMetadata,
+    };
+    // Create a blob with the data we want to download as a file
+    const blob = new Blob([JSON.stringify(data)], { type: "text/json" });
+    // Create an anchor element and dispatch a click event on it
+    // to trigger a download
+    const a = document.createElement("a");
+    const today = new Date();
+    const fileName = `rttd-configuration-${[
+      today.getDate(),
+      today.getMonth() + 1,
+      today.getFullYear(),
+    ].join("-")}.json`;
+    a.download = fileName;
+    a.href = window.URL.createObjectURL(blob);
+    const clickEvt = new MouseEvent("click", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    a.dispatchEvent(clickEvt);
+    a.remove();
+    fadingAlert(`Downloaded current configuration to ${fileName}`);
+  }
 
   return (
     <>
-      <div className="col-span-4 sm:col-span-1 mr-0 sm:mr-2 flex flex-col ">
+      <div className="col-span-4 md:col-span-1 mr-0 md:mr-2 flex flex-col md:h-screen space-y-2 ">
+        {/* Heading with upload/doownload buttons  */}
         <div
           id="heading-action-panel"
-          className="flex justify-between items-center"
+          className="flex flex-col justify-between space-y-2"
         >
-          <h1 className="text-sm">Request Configuration Panel</h1>
-          <div id="action-btn-container" className="flex">
-            <input id="uploadInput" type="file" hidden />
+          <h1 className="text-lg ">Settings Panel</h1>
+          <div id="action-btn-container" className="flex space-x-2 text-sm">
             <label
               htmlFor="uploadInput"
-              className="rounded-full bg-slate-500 p-4"
+              className="text-sm flex items-center text-center my-0 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-200 cursor-pointer disabled:cursor-not-allowed transition-all shadow-lg active:shadow"
             >
-              <Upload size="16" />
+              <Upload size={16} className="mr-1" />
+              Upload Settings
             </label>
-            <button onClick={downloadConfiguration}>
-              <Download size="16" />
-            </button>
+            <input
+              id="uploadInput"
+              type="file"
+              className="hidden"
+              accept=".json"
+              onChange={(event) => loadFile(event.target.files[0])}
+            />
+            <BasicButton
+              className="my-0 flex items-center"
+              onClick={downloadConfiguration}
+            >
+              <Download size={16} className="mr-1" />
+              Save Settings
+            </BasicButton>
           </div>
         </div>
         {/* Input for the FHIR server URL */}
-        <FhirServerUrlInput serverUrl={serverUrl} setServerUrl={setServerUrl} />
+        <div id="server-url-container">
+          <FhirServerUrlInput
+            serverUrl={serverUrl}
+            setServerUrl={setServerUrl}
+          />
+        </div>
         {/* Request Headers  */}
-        <span className="flex text-base last:border-b-0 w-full justify-between items-center">
-          <label className="text-lg mb-1" htmlFor="patientQueries">
-            Request Headers
-          </label>
-          <button
-            type="button"
-            className="flex"
-            onClick={(e) => {
-              openHeaderForm([]);
-            }}
-          >
-            <Plus className="inline m-2" size={24} />
-          </button>
-        </span>
-        {requestHeaders.some((header) => header[0] && header[1]) ? (
-          <RequestHeadersList
-            requestHeaders={requestHeaders}
-            setRequestHeaders={setRequestHeaders}
-            openHeaderForm={openHeaderForm}
-          />
-        ) : (
-          <p className="text-md text-center italic">No request headers</p>
-        )}
+        <div id="request-headers-container">
+          <span className="flex text-base last:border-b-0 w-full justify-between items-center mb-1">
+            <label className="text-lg" htmlFor="patientQueries">
+              Request Headers
+            </label>
+            <button
+              type="button"
+              className="flex"
+              onClick={(e) => {
+                openHeaderForm([]);
+              }}
+            >
+              <Plus className="inline m-2" size={20} />
+            </button>
+          </span>
+          {requestHeaders.some((header) => header[0] && header[1]) ? (
+            <RequestHeadersList
+              requestHeaders={requestHeaders}
+              setRequestHeaders={setRequestHeaders}
+              openHeaderForm={openHeaderForm}
+            />
+          ) : (
+            <p className="text-md italic">No request headers</p>
+          )}
+        </div>
         {/* Patient Queries */}
-        <span className="flex text-base last:border-b-0 w-full justify-between items-center">
-          <label className="text-lg mb-1" htmlFor="patientQueries">
-            Patient Queries
-          </label>
-          <button
-            type="button"
-            className="flex"
-            onClick={(e) => {
-              openRequestForm(patientQueries.length);
-            }}
-          >
-            <Plus className="inline m-2" size={24} />
-          </button>
-        </span>
-        {patientQueries.length > 0 ? (
-          <PatientQueryList
-            patientQueries={patientQueries}
-            setPatientQueries={setPatientQueries}
-            setCurrentPatientQuery={setCurrentPatientQuery}
-            openRequestForm={openRequestForm}
-            id="patientQueries"
-          />
-        ) : (
-          <p className="text-md text-center italic">
-            Please create a patient query
-          </p>
-        )}
+        <div id="patient-queries-container">
+          <span className="flex text-base last:border-b-0 w-full justify-between items-center mb-1">
+            <label className="text-lg" htmlFor="patientQueries">
+              Patient Queries
+            </label>
+            <button
+              type="button"
+              className="flex"
+              onClick={(e) => {
+                openRequestForm(patientQueries.length);
+              }}
+            >
+              <Plus className="inline m-2" size={20} />
+            </button>
+          </span>
+          {patientQueries.length > 0 ? (
+            <PatientQueryList
+              patientQueries={patientQueries}
+              setPatientQueries={setPatientQueries}
+              setCurrentPatientQuery={setCurrentPatientQuery}
+              openRequestForm={openRequestForm}
+              id="patientQueries"
+            />
+          ) : (
+            <p className="text-md text-center italic">
+              Please create a patient query
+            </p>
+          )}
+        </div>
         {/* Metadata toggle */}
-        <div key="metadata" className="space-x-1">
+        <div id="metadata-container" className="space-x-1">
           <input
             id="metadata-toggle"
             type="checkbox"
@@ -277,8 +353,7 @@ export default function RequestConfigurationPanel({
           <label htmlFor="metadata-toggle">Include Metadata?</label>
         </div>
         {/* Make Requests */}
-        <button
-          className="my-4 p-2 border border-gray-400 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-200 cursor-pointer disabled:cursor-not-allowed transition-all shadow-lg active:shadow "
+        <BasicButton
           onClick={async (e) => {
             setLoading(true);
             await makeRequests();
@@ -287,7 +362,7 @@ export default function RequestConfigurationPanel({
           disabled={patientQueries.length === 0}
         >
           Fetch Treatment Summaries
-        </button>
+        </BasicButton>
       </div>
       {/* Patient Query Modal */}
       {showPatientQueryForm && (
@@ -310,6 +385,13 @@ export default function RequestConfigurationPanel({
           setDisplay={setShowRequestHeaderForm}
         />
       )}
+      <div
+        id="alert-container"
+        ref={alertContainer}
+        className={`absolute bottom-4 left-4 h-16`}
+      >
+        {alert && <SuccessAlert>{alert}</SuccessAlert>}
+      </div>
     </>
   );
 }
