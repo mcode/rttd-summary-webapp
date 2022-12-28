@@ -28,6 +28,7 @@ import RequestHeaderForm from "./RequestHeaderForm";
 import RequestHeadersList from "./RequestHeadersList";
 import BasicButton from "../BasicButton";
 import SuccessAlert from "../SuccessAlert";
+import ErrorAlert from "../ErrorAlert";
 
 // GLOBALS
 const BASE_URL = "https://api.logicahealth.org/RTTD/open";
@@ -44,6 +45,7 @@ export default function RequestConfigurationPanel({
   const [currentPatientQuery, setCurrentPatientQuery] = useState({});
   const [currentPatientQueryIdx, setCurrentPatientQueryIdx] = useState();
   const [alert, setAlert] = useState();
+  const [error, setError] = useState();
   // Local storage driven data
   const [requestHeaders, setRequestHeaders] = useLocalStorage(
     "requestHeaders",
@@ -192,27 +194,67 @@ export default function RequestConfigurationPanel({
     setResourceMap(resourceMap);
   }
 
-  function fadingAlert(msg) {
+  function fadingSuccess(msg) {
     setAlert(msg);
     setTimeout(() => {
       setAlert(undefined);
     }, 6000);
   }
 
+  function fadingError(msg) {
+    setError(msg);
+    setTimeout(() => {
+      setError(undefined);
+    }, 6000);
+  }
+
+  function validConfig(config) {
+    // To start, validation will be a simple check that the keys on our object are as expected
+    const configKeys = new Set(Object.keys(config));
+    return (
+      configKeys.has("requestHeaders") &&
+      configKeys.has("serverUrl") &&
+      configKeys.has("patientQueries") &&
+      configKeys.has("includeMetadata")
+    );
+  }
+
+  // Parse configuration data and update state with the provided data, triggering a success alert
   function parseConfigSetState(configData, fileName) {
     const config = JSON.parse(configData);
     console.log(config);
-    setRequestHeaders(config.requestHeaders);
-    setServerUrl(config.serverUrl);
-    setPatientQueries(config.patientQueries);
-    setIncludeMetadata(config.includeMetadata);
-    fadingAlert(`Loaded config '${fileName}'`);
+
+    if (validConfig(config)) {
+      setRequestHeaders(config.requestHeaders);
+      setServerUrl(config.serverUrl);
+      setPatientQueries(config.patientQueries);
+      setIncludeMetadata(config.includeMetadata);
+      fadingSuccess(`Loaded config '${fileName}'`);
+    } else {
+      fadingError("Invalid config file cannot be loaded");
+    }
   }
 
+  // Load request configuration data from a file into state
   function loadFile(file) {
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => parseConfigSetState(e.target.result, file.name);
-    fileReader.readAsText(file);
+    try {
+      const fileReader = new FileReader();
+      // When the file is done, parse the config and update state
+      fileReader.onload = (e) =>
+        parseConfigSetState(e.target.result, file.name);
+      //  Handle errors with a fadingError alert
+      fileReader.onerror = () =>
+        fadingError(
+          `Encountered error when loading config; ensure it's a properly formatted json file`
+        );
+      fileReader.readAsText(file);
+    } catch (err) {
+      // Catch any unexpected errors
+      console.error(err);
+      fadingError(
+        `Failed to load config; ensure it's a properly formatted json file`
+      );
+    }
   }
 
   async function downloadConfiguration(e) {
@@ -229,6 +271,7 @@ export default function RequestConfigurationPanel({
     // to trigger a download
     const a = document.createElement("a");
     const today = new Date();
+    // Create a somewhat-unique file name based on the current day
     const fileName = `rttd-configuration-${[
       today.getDate(),
       today.getMonth() + 1,
@@ -242,19 +285,21 @@ export default function RequestConfigurationPanel({
       cancelable: true,
     });
     a.dispatchEvent(clickEvt);
+    // Remove the anchor to avoid memory leaks
     a.remove();
-    fadingAlert(`Downloaded current configuration to ${fileName}`);
+    // Trigger a success alert when finished
+    fadingSuccess(`Downloaded current configuration to ${fileName}`);
   }
 
   return (
     <>
       <div className="col-span-4 md:col-span-1 mr-0 md:mr-2 flex flex-col md:h-screen space-y-2 ">
-        {/* Heading with upload/doownload buttons  */}
+        {/* Heading with upload/download buttons  */}
         <div
           id="heading-action-panel"
           className="flex flex-col justify-between space-y-2"
         >
-          <h1 className="text-lg ">Settings Panel</h1>
+          <h1 className="text-lg italic">Request Configuration Settings</h1>
           <div id="action-btn-container" className="flex space-x-2 text-sm">
             <label
               htmlFor="uploadInput"
@@ -391,6 +436,7 @@ export default function RequestConfigurationPanel({
         className={`absolute bottom-4 left-4 h-16`}
       >
         {alert && <SuccessAlert>{alert}</SuccessAlert>}
+        {error && <ErrorAlert>{error}</ErrorAlert>}
       </div>
     </>
   );
