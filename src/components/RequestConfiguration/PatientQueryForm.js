@@ -3,7 +3,7 @@ import PatientIdInput from "./PatientIdInput";
 import NameInput from "./NameInput";
 import GenderInput from "./GenderInput";
 
-function RequestForm({
+function PatientQueryForm({
   currentPatientQuery,
   setCurrentPatientQuery,
   patientQueries,
@@ -85,20 +85,22 @@ function RequestForm({
           </form>
           <div className="flex justify-center items-center">
             <button
-              className="mx-2 border border-gray-400 px-1 hover:bg-slate-200 cursor-pointer transition-all shadow-lg active:shadow bg-slate-100"
               type="button"
-              onClick={saveQuery}
-            >
-              Save Query
-            </button>
-            <button
-              type="button"
+              tabIndex={0}
               className="mx-2 border border-gray-400 px-1 hover:bg-red-300 cursor-pointer transition-all shadow-lg active:shadow bg-red-200"
               onClick={(e) => {
                 handleClose();
               }}
             >
               Close
+            </button>
+            <button
+              className="mx-2 border border-gray-400 px-1 hover:bg-slate-200 cursor-pointer transition-all shadow-lg active:shadow bg-slate-100"
+              type="button"
+              tabIndex={0}
+              onClick={saveQuery}
+            >
+              Save Query
             </button>
           </div>
         </div>
@@ -107,4 +109,4 @@ function RequestForm({
   );
 }
 
-export default RequestForm;
+export default PatientQueryForm;

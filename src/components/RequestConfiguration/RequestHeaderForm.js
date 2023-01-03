@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Trash, Plus } from "react-feather";
 
-function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
+function RequestHeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
   const [editedRequestHeaders, setEditedRequestHeaders] = useState([
     ...requestHeaders,
   ]);
@@ -83,7 +83,7 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
                 addHeader();
               }}
             >
-              <Plus className="inline" size={24}></Plus>
+              <Plus className="inline" size={20}></Plus>
             </button>
           </div>
           <hr></hr>
@@ -118,7 +118,7 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
                         removeHeader(idx);
                       }}
                     >
-                      <Trash className="inline" size={20} />
+                      <Trash className="inline" size={16} />
                     </button>
                   </Fragment>
                 );
@@ -154,4 +154,4 @@ function HeaderForm({ requestHeaders, setRequestHeaders, setDisplay }) {
   );
 }
 
-export default HeaderForm;
+export default RequestHeaderForm;

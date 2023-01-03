@@ -27,7 +27,7 @@ function GenderInput({ currentPatientQuery, setCurrentPatientQuery }) {
         className="flex rounded-t-lg mb-4 space-x-4 justify-center"
       >
         {GENDER_OPTIONS.map((option) => (
-          <div key={option} className="space-x-1">
+          <div key={option} className="space-x-2">
             <input
               type="checkbox"
               id={option}
