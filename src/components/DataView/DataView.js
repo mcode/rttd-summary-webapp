@@ -117,15 +117,15 @@ function DataView({ resourceMap = {}, patientIds = [] }) {
       {!hasPatientData && <p>No Patient Data found for {selectedPatientId}</p>}
       {hasPatientData && (
         <>
-          <PatientTable className="my-4" data={patientData} />
-          <TreatmentVolumeTable className="my-4" data={treatmentVolumesData} />
-          <PlannedCourseTable className="my-4" data={plannedCourseData} />
+          <PatientTable className="my-6" data={patientData} />
+          <TreatmentVolumeTable className="my-6" data={treatmentVolumesData} />
+          <PlannedCourseTable className="my-6" data={plannedCourseData} />
           <PlannedTreatmentPhaseTable
-            className="my-4"
+            className="my-6"
             data={plannedTreatmentPhaseData}
           />
-          <CourseSummaryTable className="my-4" data={courseSummaryData} />
-          <TreatmentPhaseTable className="my-4" data={treatmentPhaseData} />
+          <CourseSummaryTable className="my-6" data={courseSummaryData} />
+          <TreatmentPhaseTable className="my-6" data={treatmentPhaseData} />
         </>
       )}
     </>

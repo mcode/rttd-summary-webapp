@@ -1,4 +1,28 @@
-const fhirpath = require("fhirpath");
+import _ from "lodash";
+import fhirpath from "fhirpath";
+
+// NOTE: this is an extremely western conceptualization of composing names into a human readable string
+//  May be problematic for international patient-name data
+function humanReadableName(nameObject) {
+  const use = nameObject?.use;
+  const prefix = nameObject?.prefix;
+  const givenName = nameObject?.given;
+  const familyName = nameObject?.family;
+  const suffix = nameObject?.suffix;
+  // Presence of the field will determine usage in final string
+  const hasUse = use && use !== "usual";
+  const hasPrefix = !_.isEmpty(prefix);
+  const hasGivenName = !_.isEmpty(givenName);
+  const hasFamilyName = familyName;
+  const hasSuffix = !_.isEmpty(suffix);
+
+  // Trailing spaces on the use and prefix names, leading spaces on the family and suffix name
+  return `${hasUse ? `(${use}) ` : ""}${
+    hasPrefix ? `${prefix?.join(", ")} ` : ""
+  }${hasGivenName ? `${givenName.join(", ")}` : ""}${
+    hasFamilyName ? ` ${familyName}` : ""
+  }${hasSuffix ? ` ${suffix.join(", ")}` : ""}`;
+}
 
 // Some common getters with complex FHIRpaths
 function getProcedureIntent(resource, resourceType) {
@@ -66,8 +90,9 @@ function getMetadata(resource) {
 function mapPatient(patient, includeMetadata = true) {
   const output = {};
   output["Identifier"] = getIdentifiers(patient);
-  output["First Name"] = patient?.name?.[0]?.given.join(" ");
-  output["Last Name"] = patient?.name?.[0]?.family;
+  output["Name"] = patient?.name
+    ?.map((name) => humanReadableName(name))
+    .join("; ");
   output["Date of Birth"] = patient?.birthDate;
   output["Administrative Gender"] = patient?.gender;
   output["Birth Sex"] = "N/A"; //patient?.extension[0].valueCode;
