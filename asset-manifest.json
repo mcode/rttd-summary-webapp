@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/rttd-summary-webapp/static/css/main.d03d40e5.css",
-    "main.js": "/rttd-summary-webapp/static/js/main.ef400a9e.js",
+    "main.js": "/rttd-summary-webapp/static/js/main.9cef03c9.js",
     "static/js/787.4237a2d4.chunk.js": "/rttd-summary-webapp/static/js/787.4237a2d4.chunk.js",
     "static/media/codex-logo.png": "/rttd-summary-webapp/static/media/codex-logo.babf7438fa229ef7c764.png",
     "index.html": "/rttd-summary-webapp/index.html",
     "main.d03d40e5.css.map": "/rttd-summary-webapp/static/css/main.d03d40e5.css.map",
-    "main.ef400a9e.js.map": "/rttd-summary-webapp/static/js/main.ef400a9e.js.map",
+    "main.9cef03c9.js.map": "/rttd-summary-webapp/static/js/main.9cef03c9.js.map",
     "787.4237a2d4.chunk.js.map": "/rttd-summary-webapp/static/js/787.4237a2d4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d03d40e5.css",
-    "static/js/main.ef400a9e.js"
+    "static/js/main.9cef03c9.js"
   ]
 }
