@@ -313,7 +313,10 @@ export default function RequestConfigurationPanel({
               type="file"
               className="hidden"
               accept=".json"
-              onChange={(event) => loadFile(event.target.files[0])}
+              onChange={(event) => {
+                loadFile(event.target.files[0]);
+                event.target.value = null;
+              }}
             />
             <BasicButton
               className="my-0 flex items-center"
